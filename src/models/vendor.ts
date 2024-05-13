@@ -1,14 +1,18 @@
-import mongoose, { Document, Schema } from "mongoose";
-import { isEmail } from "validator"; // Import isEmail function from validator
+import mongoose, { Document, Schema  } from "mongoose";
+import validator from "validator";
+import bcrypt from "bcrypt"
 
 export interface IVendor extends Document {
   name: string;
   email: string;
+  password:string;
   phone: string;
   address: string;
   city: string;
   state: string;
-  package: {
+  businessName:string;
+  type_Of_Business:string;
+  packages: {
     name: string;
     days: string;
     price: string;
@@ -23,7 +27,9 @@ export interface IVendor extends Document {
   bookingPolicy?: string;
   cancellationPolicy?: string;
   termAndConditions?: string;
-  review?: mongoose.Types.ObjectId; // Use mongoose.Types.ObjectId instead of Types.ObjectId
+  review?: mongoose.Types.ObjectId;
+  createdAt: Date;
+  updatedAt: Date; 
 }
 
 const VendorSchema = new Schema<IVendor>(
@@ -34,17 +40,28 @@ const VendorSchema = new Schema<IVendor>(
     },
     email: {
       type: String,
-      unique: true,
-      required: [true, "Please enter email"],
-      validate: [isEmail, "Invalid email address"], // Use isEmail function for email validation
+        required: [true, "Please enter email"],
+        unique: true,
+        trim: true, // Trim whitespace from input
+        lowercase: true, // Convert email to lowercase
+        validate: {
+            validator: (value: string) => validator.isEmail(value),
+            message: (props: any) => `${props.value} is not a valid email address!`,
+        },
+    },
+    password: {
+      type: String,
+      required: [true, 'password is required']
     },
     phone: {
       type: String,
       required: [true, "Please provide contact number"],
     },
+
+
     address: {
       type: String,
-      required: [true, "Please provide address"],
+    //  required: [true, "Please provide address"],
     },
     city: {
       type: String,
@@ -52,9 +69,21 @@ const VendorSchema = new Schema<IVendor>(
     },
     state: {
       type: String,
-      required: [true, "Please provide your State"],
+      //required: [true, "Please provide your State"],
     },
-    package: {
+
+    businessName:{
+      type: String,
+      //required: [true, "Please provide your   Business Name"],
+    },
+    type_Of_Business:{
+
+      type: String,
+     // required: [true, "Please provide your Type of Business"],
+
+    },
+
+    packages: {
       name: {  // package name
         type: String,
       },
@@ -70,7 +99,7 @@ const VendorSchema = new Schema<IVendor>(
     },
     portfolio: {
       type: [String], // Specify array of strings
-      required: [true, "Please add photo"],
+      required: false,
     },
     experience: {
       type: String,
@@ -105,5 +134,23 @@ const VendorSchema = new Schema<IVendor>(
     timestamps: true,
   }
 );
+
+
+
+//password encription...
+
+VendorSchema.pre("save" , async function (next){
+  if(!this.isModified("password")) return next();
+
+  this.password = await bcrypt.hash(this.password , 10)
+  next()
+
+})
+
+//compare the password........
+VendorSchema.methods.isPasswordCorrect = async function(password: string | Buffer){
+  return await bcrypt.compare(password, this.password)
+}
+
 
 export const Vendor = mongoose.model<IVendor>("Vendor", VendorSchema);

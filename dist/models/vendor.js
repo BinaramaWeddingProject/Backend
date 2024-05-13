@@ -1,5 +1,6 @@
 import mongoose, { Schema } from "mongoose";
-import { isEmail } from "validator"; // Import isEmail function from validator
+import validator from "validator";
+import bcrypt from "bcrypt";
 const VendorSchema = new Schema({
     name: {
         type: String,
@@ -7,9 +8,18 @@ const VendorSchema = new Schema({
     },
     email: {
         type: String,
-        unique: true,
         required: [true, "Please enter email"],
-        validate: [isEmail, "Invalid email address"], // Use isEmail function for email validation
+        unique: true,
+        trim: true, // Trim whitespace from input
+        lowercase: true, // Convert email to lowercase
+        validate: {
+            validator: (value) => validator.isEmail(value),
+            message: (props) => `${props.value} is not a valid email address!`,
+        },
+    },
+    password: {
+        type: String,
+        required: [true, 'password is required']
     },
     phone: {
         type: String,
@@ -17,7 +27,7 @@ const VendorSchema = new Schema({
     },
     address: {
         type: String,
-        required: [true, "Please provide address"],
+        //  required: [true, "Please provide address"],
     },
     city: {
         type: String,
@@ -25,9 +35,17 @@ const VendorSchema = new Schema({
     },
     state: {
         type: String,
-        required: [true, "Please provide your State"],
+        //required: [true, "Please provide your State"],
     },
-    package: {
+    businessName: {
+        type: String,
+        //required: [true, "Please provide your   Business Name"],
+    },
+    type_Of_Business: {
+        type: String,
+        // required: [true, "Please provide your Type of Business"],
+    },
+    packages: {
         name: {
             type: String,
         },
@@ -43,7 +61,7 @@ const VendorSchema = new Schema({
     },
     portfolio: {
         type: [String], // Specify array of strings
-        required: [true, "Please add photo"],
+        required: false,
     },
     experience: {
         type: String,
@@ -76,4 +94,15 @@ const VendorSchema = new Schema({
 }, {
     timestamps: true,
 });
+//password encription...
+VendorSchema.pre("save", async function (next) {
+    if (!this.isModified("password"))
+        return next();
+    this.password = await bcrypt.hash(this.password, 10);
+    next();
+});
+//compare the password........
+VendorSchema.methods.isPasswordCorrect = async function (password) {
+    return await bcrypt.compare(password, this.password);
+};
 export const Vendor = mongoose.model("Vendor", VendorSchema);
