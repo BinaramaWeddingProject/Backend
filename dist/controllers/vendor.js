@@ -21,6 +21,25 @@ export const Register = asyncHandler(async (req, res, next) => {
     }
     return res.status(201).json(new ApiResponse(200, { vendor }, "vendor regiested successfully"));
 });
+//login vendor
+export const Login = asyncHandler(async (req, res) => {
+    const { email, password } = req.body;
+    if (!email || !password) {
+        throw new ApiError(400, "Email or Passwoerd is missing!!");
+    }
+    //finding user form data base using id
+    const vendor = await Vendor.findOne({ email });
+    if (!vendor) {
+        throw new ApiError(404, "Email/User dont exists!!");
+    }
+    //check  password...
+    const isPasswordValid = await vendor.isPasswordCorrect(password);
+    if (!isPasswordValid) {
+        throw new ApiError(401, "Invalid user credentials");
+    }
+    const loggedInVendor = await Vendor.findById(vendor._id).select("-password");
+    return res.status(200).json(new ApiResponse(200, { loggedInVendor }, "here is the vendor"));
+});
 //update details of the vendor...
 export const UpdateVendor = asyncHandler(async (req, res) => {
     const { id } = req.params;

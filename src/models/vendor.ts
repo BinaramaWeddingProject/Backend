@@ -28,6 +28,7 @@ export interface IVendor extends Document {
   cancellationPolicy?: string;
   termAndConditions?: string;
   review?: mongoose.Types.ObjectId;
+  isPasswordCorrect(password: string | Buffer): Promise<boolean>;
   createdAt: Date;
   updatedAt: Date; 
 }

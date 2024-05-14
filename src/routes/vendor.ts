@@ -1,11 +1,12 @@
 import { Router } from "express";
-import {Register, UpdateVendor , GetVendorById , DeleteVendorById, ShowAllVendors, searchVendorsByCity } from "../controllers/vendor.js"
+import {Register, UpdateVendor , GetVendorById , DeleteVendorById, ShowAllVendors, searchVendorsByCity, Login } from "../controllers/vendor.js"
 import { upload } from "../middlewares/multer.js";
 
 const router = Router();
 
 //post
 router.route("/register").post(Register);
+router.route("/login").post(Login);
 
 //put
 router.route("/:id").put(upload.array('image' , 3),UpdateVendor);
