@@ -16,7 +16,7 @@ export const Register = asyncHandler(async(
     next: NextFunction) =>{
 
         const {name , email , password , phone , city , type_Of_Business , businessName  } = req.body;
-        console.log(name , email , password , phone , city , type_Of_Business , businessName)
+       // console.log(name , email , password , phone , city , type_Of_Business , businessName)
         const vendor = await Vendor.create({
             name ,
             email ,
@@ -72,32 +72,34 @@ export const Login = asyncHandler(async(req: Request, res: Response) =>{
 })
 
 //update details of the vendor...
-export const UpdateVendor = asyncHandler(async(req: Request, res: Response) => {
-    const { id } = req.params; 
+export const UpdateVendor = asyncHandler(async (req: Request, res: Response) => {
+  const { id } = req.params;
 
-    const updateFields: Partial<IVendor> = req.body;
+  const updateFields: Partial<IVendor> = req.body;
+  const givenFiles = req.files as Express.Multer.File[];
 
-    const imageUrls = await uploadOnCloudinary(req.files);
-   
-    const vendor = await Vendor.findById(id);
-     
-    if(!vendor){
-        throw new ApiError(404 , "No Vendor Found!!!");
+  const vendor = await Vendor.findById(id);
+
+  if (!vendor) {
+    throw new ApiError(404, "No Vendor Found!!!");
+  }
+
+  if (givenFiles?.length > 0) {
+    console.log(givenFiles);
+    const imageUrls = await uploadOnCloudinary(givenFiles);
+    if (imageUrls) vendor.portfolio = imageUrls;
+  }
+
+  // Update all fields present in req.body
+  for (const [key, value] of Object.entries(updateFields)) {
+    if (key !== '_id' && key !== '__v') {
+      (vendor as any)[key] = value;
     }
-      
+  }
 
-    // Update all fields present in req.body
-    for (const [key, value] of Object.entries(updateFields)) {
-        if (key !== '_id' && key !== '__v') {
-            (vendor as any)[key] = value;
-        }
-    }
-    if(imageUrls) vendor.portfolio = imageUrls
-
-    await vendor.save();
-    return res.status(200).json(new ApiResponse(200 , "Vendor Updated Successfully!!"));
+  await vendor.save();
+  return res.status(200).json(new ApiResponse(200, "Vendor Updated Successfully!!"));
 });
-
 
 //Get Vendor By ID
 export const GetVendorById = asyncHandler(async(req: Request, res: Response) => {

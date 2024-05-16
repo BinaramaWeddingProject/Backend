@@ -6,7 +6,7 @@ import { uploadOnCloudinary } from "../utils/cloudniary.js";
 //Register vendor 
 export const Register = asyncHandler(async (req, res, next) => {
     const { name, email, password, phone, city, type_Of_Business, businessName } = req.body;
-    console.log(name, email, password, phone, city, type_Of_Business, businessName);
+    // console.log(name , email , password , phone , city , type_Of_Business , businessName)
     const vendor = await Vendor.create({
         name,
         email,
@@ -44,10 +44,16 @@ export const Login = asyncHandler(async (req, res) => {
 export const UpdateVendor = asyncHandler(async (req, res) => {
     const { id } = req.params;
     const updateFields = req.body;
-    const imageUrls = await uploadOnCloudinary(req.files);
+    const givenFiles = req.files;
     const vendor = await Vendor.findById(id);
     if (!vendor) {
         throw new ApiError(404, "No Vendor Found!!!");
+    }
+    if (givenFiles?.length > 0) {
+        console.log(givenFiles);
+        const imageUrls = await uploadOnCloudinary(givenFiles);
+        if (imageUrls)
+            vendor.portfolio = imageUrls;
     }
     // Update all fields present in req.body
     for (const [key, value] of Object.entries(updateFields)) {
@@ -55,8 +61,6 @@ export const UpdateVendor = asyncHandler(async (req, res) => {
             vendor[key] = value;
         }
     }
-    if (imageUrls)
-        vendor.portfolio = imageUrls;
     await vendor.save();
     return res.status(200).json(new ApiResponse(200, "Vendor Updated Successfully!!"));
 });
