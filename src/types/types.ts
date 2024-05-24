@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from "express";
+import { Types } from "mongoose";
 
 export interface NewUserRequestBody {
     name: string;
@@ -27,6 +28,34 @@ export interface NewUserRequestBody {
     termAndConditions?: string;
    
 }
+
+export interface NewVenueRequestBody{
+  
+  name: string;
+  businessName:string;
+  yourName: string;
+  email: string;
+  password: string;
+  phone: string;
+  address: string;
+  city: string;
+  state: string;
+  comments:string;
+  guestCapacity?: string;
+  images: string[];
+  description?: string;
+  about?: string;
+  howToReach?: string;
+  venueExpertNotes?: string;
+  featuresOfVenue?: string;
+  venuePolicies?: string;
+  summary?: string;
+  review?: Types.ObjectId;
+  foodPackages?: Types.ObjectId;
+
+}
+
+
 
 
 // Define your ControllerType type alias

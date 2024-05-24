@@ -1,24 +1,27 @@
-import mongoose, { Document, Schema  } from "mongoose";
+import mongoose, { Document, Schema } from "mongoose";
 import validator from "validator";
-import bcrypt from "bcrypt"
+import jwt from "jsonwebtoken";
+import bcrypt from "bcrypt";
+import dotenv from 'dotenv';
+dotenv.config();
 
 export interface IVendor extends Document {
   name: string;
   email: string;
-  password:string;
+  password: string;
   phone: string;
   address: string;
   city: string;
   state: string;
-  businessName:string;
-  type_Of_Business:string;
+  businessName: string;
+  type_Of_Business: string;
   packages: {
     name: string;
     days: string;
     price: string;
     minAdvance: string;
   };
-  portfolio: Array<string>; // Specify the type of elements in the array
+  portfolio: Array<string>;
   experience?: string;
   event_completed?: number;
   willingToTravel?: boolean;
@@ -29,8 +32,11 @@ export interface IVendor extends Document {
   termAndConditions?: string;
   review?: mongoose.Types.ObjectId;
   isPasswordCorrect(password: string | Buffer): Promise<boolean>;
+  generateAccessToken(): string;
+  generateRefreshToken(): string;
+  refreshToken?: string;
   createdAt: Date;
-  updatedAt: Date; 
+  updatedAt: Date;
 }
 
 const VendorSchema = new Schema<IVendor>(
@@ -41,28 +47,26 @@ const VendorSchema = new Schema<IVendor>(
     },
     email: {
       type: String,
-        required: [true, "Please enter email"],
-        unique: true,
-        trim: true, // Trim whitespace from input
-        lowercase: true, // Convert email to lowercase
-        validate: {
-            validator: (value: string) => validator.isEmail(value),
-            message: (props: any) => `${props.value} is not a valid email address!`,
-        },
+      required: [true, "Please enter email"],
+      unique: true,
+      trim: true,
+      lowercase: true,
+      validate: {
+        validator: (value: string) => validator.isEmail(value),
+        message: (props: any) => `${props.value} is not a valid email address!`,
+      },
     },
     password: {
       type: String,
-      required: [true, 'password is required']
+      required: [true, 'password is required'],
     },
+    
     phone: {
       type: String,
       required: [true, "Please provide contact number"],
     },
-
-
     address: {
       type: String,
-    //  required: [true, "Please provide address"],
     },
     city: {
       type: String,
@@ -70,22 +74,15 @@ const VendorSchema = new Schema<IVendor>(
     },
     state: {
       type: String,
-      //required: [true, "Please provide your State"],
     },
-
-    businessName:{
+    businessName: {
       type: String,
-      //required: [true, "Please provide your   Business Name"],
     },
-    type_Of_Business:{
-
+    type_Of_Business: {
       type: String,
-     // required: [true, "Please provide your Type of Business"],
-
     },
-
     packages: {
-      name: {  // package name
+      name: {
         type: String,
       },
       days: {
@@ -94,12 +91,12 @@ const VendorSchema = new Schema<IVendor>(
       price: {
         type: String,
       },
-      minAdvance: {  // to book the vendor
+      minAdvance: {
         type: String,
-      }
+      },
     },
     portfolio: {
-      type: [String], // Specify array of strings
+      type: [String],
       required: false,
     },
     experience: {
@@ -129,7 +126,10 @@ const VendorSchema = new Schema<IVendor>(
     review: {
       type: mongoose.Types.ObjectId,
       ref: "Review",
-    }
+    },
+    refreshToken: {
+      type: String,
+    },
   },
   {
     timestamps: true,
@@ -137,21 +137,54 @@ const VendorSchema = new Schema<IVendor>(
 );
 
 
+// Password encryption
+VendorSchema.pre("save", async function (next) {
+  if (!this.isModified("password")) return next();
+  this.password = await bcrypt.hash(this.password, 10);
+  next();
+});
 
-//password encription...
 
-VendorSchema.pre("save" , async function (next){
-  if(!this.isModified("password")) return next();
-
-  this.password = await bcrypt.hash(this.password , 10)
-  next()
-
-})
-
-//compare the password........
-VendorSchema.methods.isPasswordCorrect = async function(password: string | Buffer){
-  return await bcrypt.compare(password, this.password)
+// Compare the password
+VendorSchema.methods.isPasswordCorrect = async function (password: string | Buffer) {
+  return await bcrypt.compare(password, this.password);
 }
+
+
+
+// // Generate access token
+// VendorSchema.methods.generateAccessToken = function (): string {
+//   if (!process.env.ACCESS_TOKEN_SECRET || !process.env.ACCESS_TOKEN_EXPIRY) {
+//     throw new Error('Missing ACCESS_TOKEN_SECRET or ACCESS_TOKEN_EXPIRY environment variable');
+//   }
+//   return jwt.sign(
+//     {
+//       _id: this._id,
+//     },
+//     process.env.ACCESS_TOKEN_SECRET,
+//     {
+//       expiresIn: process.env.ACCESS_TOKEN_EXPIRY,
+//     }
+//   );
+// }
+
+
+// // Generate refresh token
+// VendorSchema.methods.generateRefreshToken = function (): string {
+//   if (!process.env.REFRESH_TOKEN_SECRET || !process.env.REFRESH_TOKEN_EXPIRY) {
+//     throw new Error('Missing REFRESH_TOKEN_SECRET or REFRESH_TOKEN_EXPIRY environment variable');
+//   }
+//   return jwt.sign(
+//     {
+//       _id: this._id,
+//     },
+//     process.env.REFRESH_TOKEN_SECRET,
+//     {
+//       expiresIn: process.env.REFRESH_TOKEN_EXPIRY,
+//     }
+//   );
+// }
+
 
 
 export const Vendor = mongoose.model<IVendor>("Vendor", VendorSchema);

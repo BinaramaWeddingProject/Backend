@@ -3,6 +3,25 @@ import { asyncHandler } from "../utils/asynHandler.js";
 import { ApiError } from "../utils/apiError.js";
 import { ApiResponse } from "../utils/apiResponse.js";
 import { uploadOnCloudinary } from "../utils/cloudniary.js";
+import jwt from 'jsonwebtoken';
+export const generateAccessAndRefreshTokens = async (vendorId) => {
+    try {
+        const vendor = await Vendor.findById(vendorId);
+        if (!vendor) {
+            throw new Error("Vendor not found");
+        }
+        const accessToken = vendor.generateAccessToken();
+        const refreshToken = vendor.generateRefreshToken();
+        // Attach refresh token to the vendor document
+        vendor.refreshToken = refreshToken;
+        // Save the vendor with validateBeforeSave set to false
+        await vendor.save({ validateBeforeSave: false });
+        return { accessToken, refreshToken };
+    }
+    catch (error) {
+        throw new Error("Something went wrong while generating the access token");
+    }
+};
 //Register vendor 
 export const Register = asyncHandler(async (req, res, next) => {
     const { name, email, password, phone, city, type_Of_Business, businessName } = req.body;
@@ -16,29 +35,39 @@ export const Register = asyncHandler(async (req, res, next) => {
         type_Of_Business,
         businessName
     });
+    //generate refresh and acess tokens for the user....
+    //TODO ACESS TOKEN HANDEL..
+    const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(vendor._id);
     if (!vendor) {
         throw new ApiError(500, "something went wrong while registering the vendor!!");
     }
-    return res.status(201).json(new ApiResponse(200, { vendor }, "vendor regiested successfully"));
+    return res.status(201).json(new ApiResponse(200, { vendor, accessToken, refreshToken }, "vendor regiested successfully"));
 });
-//login vendor
+// Login vendor
 export const Login = asyncHandler(async (req, res) => {
     const { email, password } = req.body;
     if (!email || !password) {
-        throw new ApiError(400, "Email or Passwoerd is missing!!");
+        throw new ApiError(400, "Email or Password is missing!!");
     }
-    //finding user form data base using id
+    // Finding vendor from database using email
     const vendor = await Vendor.findOne({ email });
     if (!vendor) {
-        throw new ApiError(404, "Email/User dont exists!!");
+        throw new ApiError(404, "Email/User doesn't exist!!");
     }
-    //check  password...
+    // Check password
     const isPasswordValid = await vendor.isPasswordCorrect(password);
     if (!isPasswordValid) {
         throw new ApiError(401, "Invalid user credentials");
     }
+    // Generate access token
+    const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET || 'default_secret_key';
+    const accessToken = jwt.sign({ id: vendor._id }, accessTokenSecret, { expiresIn: '1h' });
+    // Fetch logged-in vendor details excluding password
     const loggedInVendor = await Vendor.findById(vendor._id).select("-password");
-    return res.status(200).json(new ApiResponse(200, { loggedInVendor }, "here is the vendor"));
+    // Return response with logged-in vendor details and access token
+    return res.status(200)
+        .cookie("accesToken", accessToken) //put tokens in cookies
+        .json(new ApiResponse(200, { loggedInVendor, accessToken }, "Here is the vendor"));
 });
 //update details of the vendor...
 export const UpdateVendor = asyncHandler(async (req, res) => {
