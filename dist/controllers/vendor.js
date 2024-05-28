@@ -4,24 +4,6 @@ import { ApiError } from "../utils/apiError.js";
 import { ApiResponse } from "../utils/apiResponse.js";
 import { uploadOnCloudinary } from "../utils/cloudniary.js";
 import jwt from 'jsonwebtoken';
-export const generateAccessAndRefreshTokens = async (vendorId) => {
-    try {
-        const vendor = await Vendor.findById(vendorId);
-        if (!vendor) {
-            throw new Error("Vendor not found");
-        }
-        const accessToken = vendor.generateAccessToken();
-        const refreshToken = vendor.generateRefreshToken();
-        // Attach refresh token to the vendor document
-        vendor.refreshToken = refreshToken;
-        // Save the vendor with validateBeforeSave set to false
-        await vendor.save({ validateBeforeSave: false });
-        return { accessToken, refreshToken };
-    }
-    catch (error) {
-        throw new Error("Something went wrong while generating the access token");
-    }
-};
 //Register vendor 
 export const Register = asyncHandler(async (req, res, next) => {
     const { name, email, password, phone, city, type_Of_Business, businessName } = req.body;
@@ -35,13 +17,10 @@ export const Register = asyncHandler(async (req, res, next) => {
         type_Of_Business,
         businessName
     });
-    //generate refresh and acess tokens for the user....
-    //TODO ACESS TOKEN HANDEL..
-    const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(vendor._id);
     if (!vendor) {
         throw new ApiError(500, "something went wrong while registering the vendor!!");
     }
-    return res.status(201).json(new ApiResponse(200, { vendor, accessToken, refreshToken }, "vendor regiested successfully"));
+    return res.status(201).json(new ApiResponse(200, { vendor }, "vendor regiested successfully"));
 });
 // Login vendor
 export const Login = asyncHandler(async (req, res) => {
@@ -86,7 +65,9 @@ export const UpdateVendor = asyncHandler(async (req, res) => {
     }
     // Update all fields present in req.body
     for (const [key, value] of Object.entries(updateFields)) {
-        if (key !== '_id' && key !== '__v') {
+        if (value == undefined)
+            continue;
+        if (key !== '_id' && key !== '__v' && value != undefined) {
             vendor[key] = value;
         }
     }

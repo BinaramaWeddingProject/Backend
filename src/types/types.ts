@@ -55,6 +55,15 @@ export interface NewVenueRequestBody{
 
 }
 
+export interface NewUsersRequestBody {
+  fullName: string;
+  email: string;
+  password:string;
+  phone: string;
+  city: string;
+  
+ 
+}
 
 
 
