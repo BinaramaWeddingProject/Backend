@@ -86,13 +86,6 @@ export const Login = asyncHandler(async (req: Request, res: Response) => {
   );
 });
 
-
-
-
-
-
-
-
 //update details of the vendor...
 export const UpdateVendor = asyncHandler(async (req: Request, res: Response) => {
   const { id } = req.params;
