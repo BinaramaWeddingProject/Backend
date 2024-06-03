@@ -1,6 +1,7 @@
 import { Router } from "express";
-import {Register, UpdateVendor , GetVendorById , DeleteVendorById, ShowAllVendors, searchVendorsByCity, Login } from "../controllers/vendor.js"
+import {Register, UpdateVendor , GetVendorById , DeleteVendorById, ShowAllVendors, searchVendorsByCity, Login, GetVendorByType } from "../controllers/vendor.js"
 import { upload } from "../middlewares/multer.js";
+
 
 
 const router = Router();
@@ -25,7 +26,8 @@ router.get(":city", searchVendorsByCity);
 //delete
 router.route("/:id").delete(DeleteVendorById)
 
-
+//Get -  vendors by type
+router.get("/category/:type_Of_Business",GetVendorByType)
 
 
 

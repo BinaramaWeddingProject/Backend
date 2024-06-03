@@ -17,8 +17,7 @@ router.get("/:id", GetUserById);
 
 
 //delete
-router.route("/:id").delete(DeleteUserById)
-
+router.route("/:id").delete(DeleteUserById);
 
 
 export default router;

@@ -4,6 +4,24 @@ import { ApiError } from "../utils/apiError.js";
 import { ApiResponse } from "../utils/apiResponse.js";
 import { uploadOnCloudinary } from "../utils/cloudniary.js";
 import jwt from 'jsonwebtoken';
+export const generateAccessAndRefreshTokens = async (vendorId) => {
+    try {
+        const vendor = await Vendor.findById(vendorId);
+        if (!vendor) {
+            throw new Error("Vendor not found");
+        }
+        const accessToken = vendor.generateAccessToken();
+        const refreshToken = vendor.generateRefreshToken();
+        // Attach refresh token to the vendor document
+        vendor.refreshToken = refreshToken;
+        // Save the vendor with validateBeforeSave set to false
+        await vendor.save({ validateBeforeSave: false });
+        return { accessToken, refreshToken };
+    }
+    catch (error) {
+        throw new Error("Something went wrong while generating the access token");
+    }
+};
 //Register vendor 
 export const Register = asyncHandler(async (req, res, next) => {
     const { name, email, password, phone, city, type_Of_Business, businessName } = req.body;
@@ -128,3 +146,20 @@ export const searchVendorsByCity = async (req, res) => {
     }
 };
 //
+//Get vendor type
+export const GetVendorByType = asyncHandler(async (req, res) => {
+    console.log("pass1");
+    const type = req.params.type_Of_Business;
+    console.log(req.params);
+    console.log("pass2", type);
+    // Find vendors based on the type_Of_Business field
+    const vendors = await Vendor.find({ type_Of_Business: type });
+    console.log("pass3", vendors);
+    // Check if vendors were found
+    if (!vendors || vendors.length === 0) {
+        // Handle case where no vendors were found for the given type
+        throw new ApiError(404, "No Vendors Found!!!");
+    }
+    // Return the found vendors
+    return res.status(200).json(new ApiResponse(200, { vendors }, "Here are the Vendors by type"));
+});

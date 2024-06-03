@@ -50,6 +50,29 @@ export const GetVenueById = asyncHandler(async (req, res) => {
     }
     return res.status(200).json(new ApiResponse(200, { venue }, "Here is the Vendor"));
 });
+//update Venue
+export const UpdateVenue = asyncHandler(async (req, res) => {
+    const { id } = req.params;
+    const updateFields = req.body;
+    const givenFiles = req.files;
+    const venue = await Venue.findById(id);
+    if (!venue) {
+        throw new ApiError(404, "No Venue Found!!!");
+    }
+    // if (givenFiles?.length > 0) {
+    //   console.log(givenFiles);
+    //   const imageUrls = await uploadOnCloudinary(givenFiles);
+    //   if (imageUrls) venue.images = imageUrls;
+    // }
+    // Update all fields present in req.body
+    for (const [key, value] of Object.entries(updateFields)) {
+        if (key !== '_id' && key !== '__v') {
+            venue[key] = value;
+        }
+    }
+    await venue.save();
+    return res.status(200).json(new ApiResponse(200, "Venue Updated Successfully!!"));
+});
 //Delete venue bY ID
 export const DeleteVenueById = asyncHandler(async (req, res) => {
     const { id } = req.params;
