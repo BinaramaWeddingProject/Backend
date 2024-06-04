@@ -6,7 +6,7 @@ import { ApiError } from "../utils/apiError.js";
 import { ApiResponse } from "../utils/apiResponse.js";
 import { uploadOnCloudinary } from "../utils/cloudniary.js";
 import { Venue , IVenue} from "../models/venue.js";
-import { VenueBooking } from "../models/booking.js";
+import { VenueBooking } from "../models/booking/venuebooking.js";
 import jwt from 'jsonwebtoken';
 
 

@@ -1,69 +1,89 @@
-// import { Request, Response } from 'express';
-// import WishlistModel from '../models/Wishlist.js';
+import { Request, Response } from 'express';
+import WishlistModel from '../models/wishlist.js';
+import mongoose from 'mongoose';
 
-// // Controller function to add an item to the wishlist
-// export const addItemToWishlist = async (req: Request, res: Response) => {
-//     try {
-//         const { userId, itemId, itemType } = req.body;
+// Controller function to add an item to the wishlist
+export const addItemToWishlist = async (req: Request, res: Response) => {
+    try {
+        const { userId, itemId, itemType} = req.body;
 
-//         // Check if the item already exists in the wishlist
-//         const existingItem = await WishlistModel.findOne({
-//             userId,
-//             'items.itemId': itemId,
-//             'items.itemType': itemType
-//         });
+        // Check if the item already exists in the wishlist
+        // const existingItem = await WishlistModel.findOne({
+        //     // userId,
+        //     // 'items.itemId': itemId,
+        //     'items.itemType': itemType
+        // });
 
-//         if (existingItem) {
-//             return res.status(400).json({ message: 'Item already exists in the wishlist' });
-//         }
+        // if (existingItem) {
+        //     return res.status(400).json({ message: 'Item already exists in the wishlist' });
+        // }
 
-//         // Add the item to the wishlist
-//         await WishlistModel.findOneAndUpdate(
-//             { userId },
-//             { $push: { items: { itemId, itemType, selected: true } } },
-//             { upsert: true }
-//         );
+        // // Add the item to the wishlist
+        // await WishlistModel.findOneAndUpdate(
+        //     { userId },
+        //     { $push: { items: { itemId, itemType, selected: true } } },
+        //     { upsert: true }
+        // );
 
-//         return res.status(201).json({ message: 'Item added to wishlist successfully' });
-//     } catch (error) {
-//         console.error('Error adding item to wishlist:', error);
-//         return res.status(500).json({ message: 'Internal server error' });
-//     }
-// };
+        // if (!mongoose.Types.ObjectId.isValid(userId)) {
+        //     return res.status(400).json({ message: 'Invalid userId' });
+        // }
 
-// // Controller function to remove an item from the wishlist
-// export const removeItemFromWishlist = async (req: Request, res: Response) => {
-//     try {
-//         const { userId, itemId, itemType } = req.body;
+        if(!userId){
+            return res.status(400).json({ message: 'Invalid userId' });
+        }
 
-//         // Remove the item from the wishlist
-//         await WishlistModel.findOneAndUpdate(
-//             { userId },
-//             { $pull: { items: { itemId, itemType } } }
-//         );
+        // Add the item to the wishlist
+        const wishlist = await WishlistModel.create({
+            userId: userId, // Convert userId to ObjectId
+            items: [{ itemId, itemType, selected: true }] // Wrap item details in an object
+        });
+        // // Add the item to the wishlist
+        // const wishlist = await WishlistModel.create({
+        //     userId,
+        //     items: [ itemId, itemType, {selected: true} ]
+        // })
+       
+        return res.status(201).json({ message: 'Item added to wishlist successfully' });
+    } catch (error) {
+        console.error('Error adding item to wishlist:', error);
+        return res.status(500).json({ message: 'Internal server error' });
+    }
+};
 
-//         return res.status(200).json({ message: 'Item removed from wishlist successfully' });
-//     } catch (error) {
-//         console.error('Error removing item from wishlist:', error);
-//         return res.status(500).json({ message: 'Internal server error' });
-//     }
-// };
+// Controller function to remove an item from the wishlist
+export const removeItemFromWishlist = async (req: Request, res: Response) => {
+    try {
+        const { userId, itemId, itemType } = req.body;
 
-// // Controller function to get the user's wishlist
-// export const getUserWishlist = async (req: Request, res: Response) => {
-//     try {
-//         const userId = req.params.userId;
+        // Remove the item from the wishlist
+        await WishlistModel.findOneAndUpdate(
+            { userId },
+            { $pull: { items: { itemId, itemType } } }
+        );
 
-//         // Find the user's wishlist
-//         const wishlist = await WishlistModel.findOne({ userId });
+        return res.status(200).json({ message: 'Item removed from wishlist successfully' });
+    } catch (error) {
+        console.error('Error removing item from wishlist:', error);
+        return res.status(500).json({ message: 'Internal server error' });
+    }
+};
 
-//         if (!wishlist) {
-//             return res.status(404).json({ message: 'Wishlist not found' });
-//         }
+// Controller function to get the user's wishlist
+export const getUserWishlist = async (req: Request, res: Response) => {
+    try {
+        const userId = req.params.userId;
 
-//         return res.status(200).json({ wishlist });
-//     } catch (error) {
-//         console.error('Error fetching user wishlist:', error);
-//         return res.status(500).json({ message: 'Internal server error' });
-//     }
-// };
+        // Find the user's wishlist
+        const wishlist = await WishlistModel.findOne({ userId });
+
+        if (!wishlist) {
+            return res.status(404).json({ message: 'Wishlist not found' });
+        }
+
+        return res.status(200).json({ wishlist });
+    } catch (error) {
+        console.error('Error fetching user wishlist:', error);
+        return res.status(500).json({ message: 'Internal server error' });
+    }
+};

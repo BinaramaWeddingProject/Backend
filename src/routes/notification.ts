@@ -1,15 +1,28 @@
 import { Router } from "express";
-import {  getNotificationVendor, getNotificationVenue, postNotificationVendor, postNotificationVenue } from "../controllers/noficication.js";
+import {  getNotificationAdmin, getNotificationUser, getNotificationVendor, getNotificationVenue, postNotificationAdmin, postNotificationUser, postNotificationVendor, postNotificationVenue, updateAdminNotification, updateUserNotification, updateVendorNotification, updateVenueNotification } from "../controllers/notification.js";
 
 const router = Router();
 
-//post notification
+//notification
+
+//vendor 
 router.route("/notificationvendor").post(postNotificationVendor);
-
-router.route("/notificationvenue").post(postNotificationVenue);
-
 router.route("/getnotificationvendor/:id").get(getNotificationVendor);
+router.route("/getnotificationvenue/:id").put(updateVendorNotification);
 
+//venue
+router.route("/notificationvenue").post(postNotificationVenue);
 router.route("/getnotificationvenue/:id").get(getNotificationVenue);
+router.route("/getnotificationvenue/:id").put(updateVenueNotification);
+
+//user
+router.route("/notificationvenue").post(postNotificationUser);
+router.route("/getnotificationvenue/:id").get(getNotificationUser);
+router.route("/getnotificationvenue/:id").put(updateUserNotification);
+
+//venue
+router.route("/notificationvenue").post(postNotificationAdmin);
+router.route("/getnotificationvenue/:id").get(getNotificationAdmin);
+router.route("/getnotificationvenue/:id").put(updateAdminNotification);
 
 export default router;
