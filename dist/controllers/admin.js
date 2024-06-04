@@ -134,22 +134,6 @@ export const updateAdminProfileById = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
-// Function to update admin venue permissions by admin ID
-export const updateAdminVenuePermissionsById = async (req, res) => {
-    try {
-        const updatedPermissions = await AdminModel.findOneAndUpdate({ _id: req.params.id }, { $set: { 'venue': req.body } }, { new: true });
-        if (updatedPermissions) {
-            res.status(200).json(updatedPermissions);
-        }
-        else {
-            res.status(404).json({ message: 'Admin not found' });
-        }
-    }
-    catch (error) {
-        res.status(500).json({ message: error.message });
-    }
-};
-// Similar functions for updating vendor, user, and booking permissions could be added here
 // Function to get all vendors
 export const getAllVendors = async (req, res) => {
     try {
