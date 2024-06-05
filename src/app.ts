@@ -53,14 +53,14 @@ import venueRoutes from "./routes/venue.js"
 import userRoutes from "./routes/user.js"
 import { Venue } from "./models/venue.js";
 import notificationRoutes from "./routes/notification.js"
-// import wishlistRoutes from './routes/wishlist.js';
+import wishlistRoutes from './routes/wishlist.js';
 // import adminRoutes from './routes/admin.js';
 
 app.use("/api/v1/vendor", vendorRoutes);
 app.use("/api/v1/venue", venueRoutes);
 app.use("/api/v1/user", userRoutes);
 app.use("/api/v1/notificaiton", notificationRoutes);
-// app.use("/api/v1/", wishlistRoutes);
+app.use("/api/v1/", wishlistRoutes);
 // app.use("/api/v1/", adminRoutes);
 
 

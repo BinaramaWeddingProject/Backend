@@ -72,3 +72,29 @@ export const ShowAllUsers = asyncHandler(async (req, res) => {
     }
     return res.status(200).json(new ApiResponse(200, { users }, "here are all vendors."));
 });
+//update details of the user...
+export const UpdateUser = asyncHandler(async (req, res) => {
+    const { id } = req.params;
+    console.log("hello", id);
+    const updateFields = req.body;
+    const givenFiles = req.files;
+    const user = await User.findById(id);
+    if (!user) {
+        throw new ApiError(404, "No User Found!!!");
+    }
+    // if (givenFiles?.length > 0) {
+    //   console.log(givenFiles);
+    //   const imageUrls = await uploadOnCloudinary(givenFiles);
+    //   if (imageUrls) user.portfolio = imageUrls;
+    // }
+    // Update all fields present in req.body
+    for (const [key, value] of Object.entries(updateFields)) {
+        if (value == undefined)
+            continue;
+        if (key !== '_id' && key !== '__v' && value != undefined) {
+            user[key] = value;
+        }
+    }
+    await user.save();
+    return res.status(200).json(new ApiResponse(200, "User Updated Successfully!!"));
+});
