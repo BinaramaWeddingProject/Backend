@@ -4,36 +4,16 @@ export const addItemToWishlist = async (req, res) => {
     try {
         const { userId, itemId, itemType } = req.body;
         // Check if the item already exists in the wishlist
-        // const existingItem = await WishlistModel.findOne({
-        //     // userId,
-        //     // 'items.itemId': itemId,
-        //     'items.itemType': itemType
-        // });
-        // if (existingItem) {
-        //     return res.status(400).json({ message: 'Item already exists in the wishlist' });
-        // }
-        // // Add the item to the wishlist
-        // await WishlistModel.findOneAndUpdate(
-        //     { userId },
-        //     { $push: { items: { itemId, itemType, selected: true } } },
-        //     { upsert: true }
-        // );
-        // if (!mongoose.Types.ObjectId.isValid(userId)) {
-        //     return res.status(400).json({ message: 'Invalid userId' });
-        // }
-        if (!userId) {
-            return res.status(400).json({ message: 'Invalid userId' });
+        const existingItem = await WishlistModel.findOne({
+            userId,
+            'items.itemId': itemId,
+            'items.itemType': itemType
+        });
+        if (existingItem) {
+            return res.status(400).json({ message: 'Item already exists in the wishlist' });
         }
         // Add the item to the wishlist
-        const wishlist = await WishlistModel.create({
-            userId: userId, // Convert userId to ObjectId
-            items: [{ itemId, itemType, selected: true }] // Wrap item details in an object
-        });
-        // // Add the item to the wishlist
-        // const wishlist = await WishlistModel.create({
-        //     userId,
-        //     items: [ itemId, itemType, {selected: true} ]
-        // })
+        await WishlistModel.findOneAndUpdate({ userId }, { $push: { items: { itemId, itemType, selected: true } } }, { upsert: true });
         return res.status(201).json({ message: 'Item added to wishlist successfully' });
     }
     catch (error) {
