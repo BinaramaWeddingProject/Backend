@@ -1,8 +1,7 @@
-// // admin.routes.ts
-export {};
-// import express from 'express';
-// import * as adminController from '../controllers/admin.js';
-// const router = express.Router();
+import { Router } from "express";
+import { getAllVendors } from '../controllers/admin.js';
+const router = Router();
+import * as adminController from '../controllers/admin.js';
 // // Route to create a new admin
 // router.post('/admin', adminController.createAdmin);
 // // Route to get all admins
@@ -17,5 +16,18 @@ export {};
 // router.put('/admin/:id/profile', adminController.updateAdminProfileById);
 // // Route to update admin venue permissions by admin ID
 // router.put('/admin/:id/venue', adminController.updateAdminVenuePermissionsById);
-// // Similar routes for updating vendor, user, and booking permissions could be added here
-// export default router;
+// // Route to get all vendors
+// router.get('/admin/allvendors' , adminController.getAllVendors);
+// //Route to get all venues
+// router.route('/admin/allvenues').put(adminController.getAllVenues);
+// //Route to delete venue
+// router.route('/admin/deletevenue').delete(adminController.deleteVenueById);
+// //Route to get all users
+// router.route('/admin/allusers').get(adminController.getAllUsers);
+// //Route to delete user
+// router.route('/admin/deleteuser').delete(adminController.deleteUserById);
+//get all vendors..
+router.route("/allvendor").get(getAllVendors);
+//Route to delete vendor
+router.route('/:id').delete(adminController.deleteVendorById);
+export default router;

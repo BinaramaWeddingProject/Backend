@@ -29,6 +29,12 @@ const UserSchema = new Schema({
         type: String,
         required: [true, "Please provide city"],
     },
+    address: {
+        type: String,
+    },
+    avatar: {
+        type: String,
+    },
     events: [{
             type: mongoose.Types.ObjectId,
             ref: "Event",

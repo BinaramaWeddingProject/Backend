@@ -83,13 +83,23 @@ export const DeleteVenueById = asyncHandler(async (req, res) => {
     const respose = await Venue.findByIdAndDelete(id);
     return res.status(200).json(new ApiResponse(200, { respose }, "Vendor Deleted Successfully "));
 });
-//getall vendors
+// Function to get all venues with optional filters
 export const ShowAllVenues = asyncHandler(async (req, res) => {
-    const venues = await Venue.find();
+    const { city, guestCapacity } = req.query;
+    console.log(city, guestCapacity);
+    // Build the filter object
+    const filter = {};
+    if (city) {
+        filter.city = city;
+    }
+    if (guestCapacity) {
+        filter.guestCapacity = guestCapacity;
+    }
+    const venues = await Venue.find(filter);
     if (!venues || venues.length === 0) {
         throw new ApiError(404, "No vendors in DB");
     }
-    return res.status(200).json(new ApiResponse(200, { venues }, "here are all vendors."));
+    return res.status(200).json(new ApiResponse(200, { venues }, "Here are all vendors."));
 });
 // search by the city
 export const searchvenuesByCity = async (req, res) => {
