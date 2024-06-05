@@ -19,7 +19,7 @@ router.route("/all").get(ShowAllVenues);
 router.get("/:id", GetVenueById);
 
 //PUT - Update venue data
-router.route("/:id").put(upload.array('image' , 3),UpdateVenue);
+router.route("/:id").put(upload.array('image' , 20),UpdateVenue);
 
 
 

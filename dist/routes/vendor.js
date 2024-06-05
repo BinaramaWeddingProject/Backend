@@ -6,7 +6,7 @@ const router = Router();
 router.route("/register").post(Register);
 router.route("/login").post(Login);
 //put
-router.route("/:id").put(upload.array('image', 3), UpdateVendor);
+router.route("/:id").put(upload.array('image', 20), UpdateVendor);
 //get
 router.route("/all").get(ShowAllVendors);
 // GET - Retrieve a vendor by ID

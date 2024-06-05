@@ -118,7 +118,7 @@ export const UpdateVendor = asyncHandler(async (req: Request, res: Response) => 
 
   const updateFields: Partial<IVendor> = req.body;
   const givenFiles = req.files as Express.Multer.File[];
-
+ console.log("multer" , givenFiles)
   const vendor = await Vendor.findById(id);
 
   if (!vendor) {
@@ -128,6 +128,7 @@ export const UpdateVendor = asyncHandler(async (req: Request, res: Response) => 
   if (givenFiles?.length > 0) {
     console.log(givenFiles);
     const imageUrls = await uploadOnCloudinary(givenFiles);
+    console.log("cloud" , imageUrls)
     if (imageUrls) vendor.portfolio = imageUrls;
   }
 

@@ -1,6 +1,7 @@
 import { asyncHandler } from "../utils/asynHandler.js";
 import { ApiError } from "../utils/apiError.js";
 import { ApiResponse } from "../utils/apiResponse.js";
+import { uploadOnCloudinary } from "../utils/cloudniary.js";
 import { Venue } from "../models/venue.js";
 import jwt from 'jsonwebtoken';
 //Register Venu
@@ -59,11 +60,12 @@ export const UpdateVenue = asyncHandler(async (req, res) => {
     if (!venue) {
         throw new ApiError(404, "No Venue Found!!!");
     }
-    // if (givenFiles?.length > 0) {
-    //   console.log(givenFiles);
-    //   const imageUrls = await uploadOnCloudinary(givenFiles);
-    //   if (imageUrls) venue.images = imageUrls;
-    // }
+    if (givenFiles?.length > 0) {
+        console.log(givenFiles);
+        const imageUrls = await uploadOnCloudinary(givenFiles);
+        if (imageUrls)
+            venue.images = imageUrls;
+    }
     // Update all fields present in req.body
     for (const [key, value] of Object.entries(updateFields)) {
         if (key !== '_id' && key !== '__v') {

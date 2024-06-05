@@ -109,11 +109,11 @@ export const UpdateVenue = asyncHandler(async (req: Request, res: Response) => {
     throw new ApiError(404, "No Venue Found!!!");
   }
 
-  // if (givenFiles?.length > 0) {
-  //   console.log(givenFiles);
-  //   const imageUrls = await uploadOnCloudinary(givenFiles);
-  //   if (imageUrls) venue.images = imageUrls;
-  // }
+  if (givenFiles?.length > 0) {
+    console.log(givenFiles);
+    const imageUrls = await uploadOnCloudinary(givenFiles);
+    if (imageUrls) venue.images = imageUrls;
+  }
 
   // Update all fields present in req.body
   for (const [key, value] of Object.entries(updateFields)) {

@@ -71,6 +71,7 @@ export const UpdateVendor = asyncHandler(async (req, res) => {
     const { id } = req.params;
     const updateFields = req.body;
     const givenFiles = req.files;
+    console.log("multer", givenFiles);
     const vendor = await Vendor.findById(id);
     if (!vendor) {
         throw new ApiError(404, "No Vendor Found!!!");
@@ -78,6 +79,7 @@ export const UpdateVendor = asyncHandler(async (req, res) => {
     if (givenFiles?.length > 0) {
         console.log(givenFiles);
         const imageUrls = await uploadOnCloudinary(givenFiles);
+        console.log("cloud", imageUrls);
         if (imageUrls)
             vendor.portfolio = imageUrls;
     }
