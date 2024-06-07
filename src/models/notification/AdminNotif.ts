@@ -1,15 +1,15 @@
 import mongoose, { Document, Model, Schema } from "mongoose";
 
 
-export interface IVendorNotification extends Document {
-    title: string;
-    message: string;
-    status: string;
-    userId: string;
-    vendorId: string;
+export interface IAdminNotification extends Document {
+    title?: string;
+    message?: string;
+    status?: string;
+    userId?: string;
+    vendorId?: string;
 }
 
-const VendorNotificationSchema= new Schema<IVendorNotification>(
+const AdminNotificationSchema= new Schema<IAdminNotification>(
     {
         title:{
         type: String,
@@ -34,6 +34,6 @@ const VendorNotificationSchema= new Schema<IVendorNotification>(
     },
     },{timestamps: true});
 
-    export const VendorNotificationModel: Model<IVendorNotification>= mongoose.model("notification", VendorNotificationSchema);
+    export const AdminNotificationModel: Model<IAdminNotification>= mongoose.model("AdminNotification", AdminNotificationSchema);
 
-    export default VendorNotificationModel;
+    export default AdminNotificationModel;

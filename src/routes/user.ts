@@ -1,5 +1,6 @@
 import { Router } from "express";
-import { Register , Login, ShowAllUsers, GetUserById, DeleteUserById } from "../controllers/user.js";
+import { Register , Login, ShowAllUsers, GetUserById, DeleteUserById, UpdateUser } from "../controllers/user.js";
+import { upload } from "../middlewares/multer.js";
 
 
 const router = Router();
@@ -12,7 +13,12 @@ router.route("/login").post(Login);
 //get
 router.route("/all").get(ShowAllUsers);
 
-// GET - Retrieve a vendor by ID
+//put
+router.route("/:id").put(upload.array('avatar' , 1),UpdateUser);
+
+//router.route("/:id").put(upload.array('image' , 3),UpdateVendor);
+
+// GET - Retrieve a user by ID
 router.get("/:id", GetUserById);
 
 

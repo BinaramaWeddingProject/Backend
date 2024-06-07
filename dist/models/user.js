@@ -27,7 +27,13 @@ const UserSchema = new Schema({
     },
     city: {
         type: String,
-        required: [true, "Please provide city"],
+        //  required: [true, "Please provide city"],
+    },
+    address: {
+        type: String,
+    },
+    avatar: {
+        type: String,
     },
     events: [{
             type: mongoose.Types.ObjectId,

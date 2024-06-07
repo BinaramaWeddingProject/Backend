@@ -1,6 +1,7 @@
 import { asyncHandler } from "../utils/asynHandler.js";
 import { ApiError } from "../utils/apiError.js";
 import { ApiResponse } from "../utils/apiResponse.js";
+import { uploadOnCloudinary } from "../utils/cloudniary.js";
 import { Venue } from "../models/venue.js";
 import jwt from 'jsonwebtoken';
 //Register Venu
@@ -26,8 +27,9 @@ export const Login = asyncHandler(async (req, res) => {
     if (!venue) {
         throw new ApiError(404, "Email/User doesn't exist!!");
     }
-    // Check password
-    const isPasswordValid = await venue.isPasswordCorrect(password);
+    // // Check password
+    // const isPasswordValid = await vendor.isPasswordCorrect(password);
+    const isPasswordValid = venue.password === password;
     if (!isPasswordValid) {
         throw new ApiError(401, "Invalid venue credentials");
     }
@@ -59,11 +61,12 @@ export const UpdateVenue = asyncHandler(async (req, res) => {
     if (!venue) {
         throw new ApiError(404, "No Venue Found!!!");
     }
-    // if (givenFiles?.length > 0) {
-    //   console.log(givenFiles);
-    //   const imageUrls = await uploadOnCloudinary(givenFiles);
-    //   if (imageUrls) venue.images = imageUrls;
-    // }
+    if (givenFiles?.length > 0) {
+        console.log(givenFiles);
+        const imageUrls = await uploadOnCloudinary(givenFiles);
+        if (imageUrls)
+            venue.images = imageUrls;
+    }
     // Update all fields present in req.body
     for (const [key, value] of Object.entries(updateFields)) {
         if (key !== '_id' && key !== '__v') {
@@ -83,13 +86,23 @@ export const DeleteVenueById = asyncHandler(async (req, res) => {
     const respose = await Venue.findByIdAndDelete(id);
     return res.status(200).json(new ApiResponse(200, { respose }, "Vendor Deleted Successfully "));
 });
-//getall vendors
+// Function to get all venues with optional filters
 export const ShowAllVenues = asyncHandler(async (req, res) => {
-    const venues = await Venue.find();
+    const { city, guestCapacity } = req.query;
+    console.log(city, guestCapacity);
+    // Build the filter object
+    const filter = {};
+    if (city) {
+        filter.city = city;
+    }
+    if (guestCapacity) {
+        filter.guestCapacity = guestCapacity;
+    }
+    const venues = await Venue.find(filter);
     if (!venues || venues.length === 0) {
         throw new ApiError(404, "No vendors in DB");
     }
-    return res.status(200).json(new ApiResponse(200, { venues }, "here are all vendors."));
+    return res.status(200).json(new ApiResponse(200, { venues }, "Here are all vendors."));
 });
 // search by the city
 export const searchvenuesByCity = async (req, res) => {

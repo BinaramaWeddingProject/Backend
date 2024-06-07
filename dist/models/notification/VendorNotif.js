@@ -22,5 +22,5 @@ const VendorNotificationSchema = new Schema({
         required: true
     },
 }, { timestamps: true });
-export const VendorNotificationModel = mongoose.model("notification", VendorNotificationSchema);
+export const VendorNotificationModel = mongoose.model("VendorNotification", VendorNotificationSchema);
 export default VendorNotificationModel;

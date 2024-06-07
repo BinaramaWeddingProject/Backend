@@ -85,16 +85,16 @@ export const Login = asyncHandler(async (req: Request, res: Response) => {
   const vendor = await Vendor.findOne({ email });
 
   if (!vendor) {
-    throw new ApiError(404, "Email/User doesn't exist!!");
+    throw new ApiError(404, "Email/Vendor doesn't exist!!");
   }
 
-  // Check password
-  const isPasswordValid = await vendor.isPasswordCorrect(password);
+  // // Check password
+  // const isPasswordValid = await vendor.isPasswordCorrect(password);
 
-
+ const  isPasswordValid = vendor.password === password
 
   if (!isPasswordValid) {
-    throw new ApiError(401, "Invalid user credentials");
+    throw new ApiError(401, "Invalid vendor credentials");
   }
    // Generate access token
    const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET || 'default_secret_key';
@@ -106,7 +106,12 @@ export const Login = asyncHandler(async (req: Request, res: Response) => {
 
   // Return response with logged-in vendor details and access token
   return res.status(200)
-  .cookie("accesToken" , accessToken, )//put tokens in cookies
+  .cookie('authToken', accessToken, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production', // Set to true in production
+    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    // sameSite: 'Lax', // Consider setting this based on your requirements
+  })
   .json(
     new ApiResponse(200, { loggedInVendor, accessToken }, "Here is the vendor")
   );
@@ -118,7 +123,7 @@ export const UpdateVendor = asyncHandler(async (req: Request, res: Response) => 
 
   const updateFields: Partial<IVendor> = req.body;
   const givenFiles = req.files as Express.Multer.File[];
-
+ console.log("multer" , givenFiles)
   const vendor = await Vendor.findById(id);
 
   if (!vendor) {
@@ -128,6 +133,7 @@ export const UpdateVendor = asyncHandler(async (req: Request, res: Response) => 
   if (givenFiles?.length > 0) {
     console.log(givenFiles);
     const imageUrls = await uploadOnCloudinary(givenFiles);
+    console.log("cloud" , imageUrls)
     if (imageUrls) vendor.portfolio = imageUrls;
   }
 
@@ -148,10 +154,13 @@ export const GetVendorById = asyncHandler(async(req: Request, res: Response) => 
     const { id } = req.params; 
    
     const vendor = await Vendor.findById(id);
+   
      
     if(!vendor){
+   
         throw new ApiError(404 , "No Vendor Found!!!");
     }
+    
 
     return res.status(200).json(new ApiResponse(200 , {vendor} , "Here is the Vendor"));
 });

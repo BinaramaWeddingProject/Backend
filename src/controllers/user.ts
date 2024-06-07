@@ -3,9 +3,10 @@ import { asyncHandler } from "../utils/asynHandler.js";
 import { NewUsersRequestBody , ControllerType } from "../types/types.js";
 import { ApiError } from "../utils/apiError.js";
 import { ApiResponse } from "../utils/apiResponse.js";
-import { User } from "../models/user.js";
+import { IUser, User } from "../models/user.js";
 import jwt from 'jsonwebtoken';
 import { Vendor } from "../models/vendor.js";
+import { uploadOnCloudinary } from "../utils/cloudniary.js";
 
 
 
@@ -53,10 +54,10 @@ export const Login = asyncHandler(async (req: Request, res: Response) => {
       throw new ApiError(404, "Email/User doesn't exist!!");
     }
   
-    // Check password
-    const isPasswordValid = await user.isPasswordCorrect(password);
-  
-  
+   // // Check password
+  // const isPasswordValid = await vendor.isPasswordCorrect(password);
+
+  const  isPasswordValid = user.password === password
   
     if (!isPasswordValid) {
       throw new ApiError(401, "Invalid user credentials");
@@ -121,3 +122,35 @@ export const ShowAllUsers = asyncHandler(async(req: Request, res: Response) =>{
         new ApiResponse(200 , {users} , "here are all vendors.")
     )
 })
+
+//update details of the user...
+export const UpdateUser = asyncHandler(async (req: Request, res: Response) => {
+    const { id } = req.params;
+  //  console.log("hello",id);
+  
+    const updateFields: Partial<IUser> = req.body;
+    const givenFiles = req.files as Express.Multer.File[];
+ 
+    const user = await User.findById(id);
+  
+    if (!user) {
+      throw new ApiError(404, "No User Found!!!");
+    }
+  
+    if (givenFiles?.length > 0) {
+     
+      const imageUrls = await uploadOnCloudinary(givenFiles);
+     
+      if (imageUrls) user.avatar = imageUrls[0];
+    }
+// Update all fields present in req.body
+  for (const [key, value] of Object.entries(updateFields)) {
+    if(value == undefined) continue;
+    if (key !== '_id' && key !== '__v' && value != undefined) {
+      (user as any)[key] = value;
+    }
+  }
+
+  await user.save();
+  return res.status(200).json(new ApiResponse(200, "User Updated Successfully!!"));
+});

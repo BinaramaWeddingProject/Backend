@@ -8,6 +8,8 @@ export interface IUser extends Document {
   password: string;
   phone: string;
   city: string;
+  address: string;
+  avatar:string;
   events?: mongoose.Types.ObjectId[];
   isPasswordCorrect(password: string | Buffer): Promise<boolean>;
   generateAccessToken(): string;
@@ -40,9 +42,18 @@ const UserSchema = new Schema<IUser>(
     },
     city:{
         type: String,
-        required: [true, "Please provide city"],
+      //  required: [true, "Please provide city"],
 
     },
+    address: {
+        type:String,
+        
+    },
+    
+    avatar:{
+      type: String,
+    },
+
     events: [{
       type: mongoose.Types.ObjectId,
       ref: "Event",
