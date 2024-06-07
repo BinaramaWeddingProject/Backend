@@ -18,10 +18,10 @@ router.get('/all', adminController.getAllAdmins);
 router.get('/:id', adminController.getAdminById);
 
 // Route to update admin by ID
-router.patch('/:id', adminController.updateAdminProfile);
+router.put('/:id', adminController.updateAdminProfile);
 
-// // Route to delete admin by ID
-// router.delete('/:id', adminController.deleteAdminById);
+// Route to delete admin by ID
+router.delete('/:id', adminController.deleteAdminById);
 
 // // Route to update admin profile by admin ID
 // router.put('/:id/profile', adminController.updateAdminProfileById);

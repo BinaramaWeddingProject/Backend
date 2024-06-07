@@ -6,6 +6,7 @@ interface Profile {
     password: string;
     contact: string;
     address: string;
+    city: string;
   }
   
   export default Profile;

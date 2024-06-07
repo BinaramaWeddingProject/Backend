@@ -10,6 +10,7 @@ import { User } from '../models/user.js';
 import { VenueBooking } from '../models/booking/venuebooking.js';
 import { ApiError } from "../utils/apiError.js";
 import { ApiResponse } from "../utils/apiResponse.js";
+import { uploadOnCloudinary } from "../utils/cloudniary.js";
 
 
 
@@ -17,6 +18,7 @@ import { ApiResponse } from "../utils/apiResponse.js";
 export const createAdmin = async (req: Request, res: Response) => {
   try {
     const newAdmin = new AdminModel(req.body);
+    console.log("data",req.body)
     const savedAdmin = await newAdmin.save();
     res.status(201).json(savedAdmin);
   } catch (error: any) {
@@ -93,10 +95,13 @@ export const getAdminById = async (req: Request, res: Response) => {
 };
 
 // Function to update admin by ID
+// Function to update admin by ID
 export const updateAdminProfile = async (req: Request, res: Response) => {
   try {
       // Extract admin ID from request parameters
       const { id } = req.params;
+    
+      const givenFiles = req.files as Express.Multer.File[];
 
       // Find the admin by ID
       const admin = await AdminModel.findById(id);
@@ -106,8 +111,14 @@ export const updateAdminProfile = async (req: Request, res: Response) => {
           return res.status(404).json({ message: "Admin not found" });
       }
 
+      if (givenFiles?.length > 0) {
+        console.log(givenFiles);
+        const imageUrls = await uploadOnCloudinary(givenFiles);
+        console.log("cloud" , imageUrls)
+        if (imageUrls) admin.profile.avatar = imageUrls[0];
+      }
       // Extract profile data from request body
-      const { name, email, password, contact, address } = req.body;
+      const { name, email, password, contact, address, city } = req.body;
 
       // If provided, update profile fields
       if (name) admin.profile.name = name;
@@ -115,6 +126,7 @@ export const updateAdminProfile = async (req: Request, res: Response) => {
       if (password) admin.profile.password = password;
       if (contact) admin.profile.contact = contact;
       if (address) admin.profile.address = address;
+      if (city) admin.profile.city = city;
 
       // Save the updated admin document
       await admin.save();
@@ -131,9 +143,11 @@ export const updateAdminProfile = async (req: Request, res: Response) => {
   export const deleteAdminById = async (req: Request, res: Response) => {
     try {
       const deletedAdmin = await AdminModel.findByIdAndDelete(req.params.id);
+      
       if (deletedAdmin) {
         res.status(200).json({ message: 'Admin deleted successfully' });
       } else {
+        console.log("id recieved",deletedAdmin)
         res.status(404).json({ message: 'Admin not found' });
       }
     } catch (error: any) {

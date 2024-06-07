@@ -7,10 +7,12 @@ import { User } from '../models/user.js';
 import { VenueBooking } from '../models/booking/venuebooking.js';
 import { ApiError } from "../utils/apiError.js";
 import { ApiResponse } from "../utils/apiResponse.js";
+import { uploadOnCloudinary } from "../utils/cloudniary.js";
 // Function to create a new admin
 export const createAdmin = async (req, res) => {
     try {
         const newAdmin = new AdminModel(req.body);
+        console.log("data", req.body);
         const savedAdmin = await newAdmin.save();
         res.status(201).json(savedAdmin);
     }
@@ -71,18 +73,27 @@ export const getAdminById = async (req, res) => {
     }
 };
 // Function to update admin by ID
+// Function to update admin by ID
 export const updateAdminProfile = async (req, res) => {
     try {
         // Extract admin ID from request parameters
         const { id } = req.params;
+        const givenFiles = req.files;
         // Find the admin by ID
         const admin = await AdminModel.findById(id);
         // If admin not found, return 404 Not Found
         if (!admin) {
             return res.status(404).json({ message: "Admin not found" });
         }
+        if (givenFiles?.length > 0) {
+            console.log(givenFiles);
+            const imageUrls = await uploadOnCloudinary(givenFiles);
+            console.log("cloud", imageUrls);
+            if (imageUrls)
+                admin.profile.avatar = imageUrls[0];
+        }
         // Extract profile data from request body
-        const { name, email, password, contact, address } = req.body;
+        const { name, email, password, contact, address, city } = req.body;
         // If provided, update profile fields
         if (name)
             admin.profile.name = name;
@@ -94,6 +105,8 @@ export const updateAdminProfile = async (req, res) => {
             admin.profile.contact = contact;
         if (address)
             admin.profile.address = address;
+        if (city)
+            admin.profile.city = city;
         // Save the updated admin document
         await admin.save();
         // Return success response
@@ -112,6 +125,7 @@ export const deleteAdminById = async (req, res) => {
             res.status(200).json({ message: 'Admin deleted successfully' });
         }
         else {
+            console.log("id recieved", deletedAdmin);
             res.status(404).json({ message: 'Admin not found' });
         }
     }
