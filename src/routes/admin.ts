@@ -20,7 +20,8 @@ router.get('/all', adminController.getAllAdmins);
 router.get('/:id', adminController.getAdminById);
 
 // Route to update admin by ID
-router.route('/:id').patch(upload.array('image' , 1), adminController.updateAdminProfile);
+ router.route('/:id').patch(upload.array('image', 1), adminController.updateAdminProfile);
+
 
 
 
