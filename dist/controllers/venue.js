@@ -27,8 +27,9 @@ export const Login = asyncHandler(async (req, res) => {
     if (!venue) {
         throw new ApiError(404, "Email/User doesn't exist!!");
     }
-    // Check password
-    const isPasswordValid = await venue.isPasswordCorrect(password);
+    // // Check password
+    // const isPasswordValid = await vendor.isPasswordCorrect(password);
+    const isPasswordValid = venue.password === password;
     if (!isPasswordValid) {
         throw new ApiError(401, "Invalid venue credentials");
     }

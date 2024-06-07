@@ -1,57 +1,63 @@
+// admin.routes.ts
 
-import { Router } from "express";
-
-import { getAllVendors } from '../controllers/admin.js';
-
-
-const router = Router();
-
+import express from 'express';
 import * as adminController from '../controllers/admin.js';
+import { upload } from '../middlewares/multer.js';
 
 
-// // Route to create a new admin
-// router.post('/admin', adminController.createAdmin);
+const router = express.Router();
 
-// // Route to get all admins
-// router.get('/admin', adminController.getAllAdmins);
+// Route to create a new admin
+router.post('/register', adminController.createAdmin);
 
-// // Route to get admin by ID
-// router.get('/admin/:id', adminController.getAdminById);
+// Route to get all admins
+router.post('/login', adminController.loginAdmin );
 
-// // Route to update admin by ID
-// router.put('/admin/:id', adminController.updateAdminById);
+// Route to get all admin
+router.get('/all', adminController.getAllAdmins);
+
+// Route to update admin by ID
+router.get('/:id', adminController.getAdminById);
+
+// Route to update admin by ID
+router.route('/:id').patch(upload.array('image' , 1), adminController.updateAdminProfile);
+
+
 
 // // Route to delete admin by ID
-// router.delete('/admin/:id', adminController.deleteAdminById);
+// router.delete('/:id', adminController.deleteAdminById);
 
 // // Route to update admin profile by admin ID
-// router.put('/admin/:id/profile', adminController.updateAdminProfileById);
+// router.put('/:id/profile', adminController.updateAdminProfileById);
 
 // // Route to update admin venue permissions by admin ID
-// router.put('/admin/:id/venue', adminController.updateAdminVenuePermissionsById);
-
-// // Route to get all vendors
-// router.get('/admin/allvendors' , adminController.getAllVendors);
+// router.put('/:id/venue', adminController.updateAdminVenuePermissionsById);
 
 
 
-// //Route to get all venues
-// router.route('/admin/allvenues').put(adminController.getAllVenues);
 
-// //Route to delete venue
-// router.route('/admin/deletevenue').delete(adminController.deleteVenueById);
-
-// //Route to get all users
-// router.route('/admin/allusers').get(adminController.getAllUsers);
-
-// //Route to delete user
-// router.route('/admin/deleteuser').delete(adminController.deleteUserById);
-
-//get all vendors..
-router.route("/allvendor").get( getAllVendors)
+// Route to get all vendors
+router.route('/vendor/all').get(adminController.getAllVendors);
 
 //Route to delete vendor
-router.route('/:id').delete(adminController.deleteVendorById);
+router.route('/vendor/:id').delete(adminController.deleteVendorById);
 
+
+        //VENUE
+
+//Route to get all venues
+router.route('/venue/all').get(adminController.getAllVenues);
+
+//Route to delete venue
+router.route('/venue/:id').delete(adminController.deleteVenueById);
+
+
+        //User
+
+//Route to get all users
+router.route('/user/all').get(adminController.getAllUsers);
+
+//Route to delete user
+router.route('/user/:id').delete(adminController.deleteUserById);
 
 export default router;

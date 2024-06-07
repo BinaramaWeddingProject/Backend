@@ -1,8 +1,8 @@
 import { asyncHandler } from "../utils/asynHandler.js";
-import VendorNotificationModel from "../models/VendorNotif.js";
-import VenueNotificationModel from "../models/VenueNotif.js";
-import AdminNotificationModel from "../models/AdminNotif.js";
-import UserNotificationModel from "../models/UserNotif.js";
+import VendorNotificationModel from "../models/notification/VendorNotif.js";
+import VenueNotificationModel from "../models/notification/VenueNotif.js";
+import AdminNotificationModel from "../models/notification/AdminNotif.js";
+import UserNotificationModel from "../models/notification/UserNotif.js";
 export const postNotificationVendor = asyncHandler(async (req, res, next) => {
     try {
         const { userId, venueId, message } = req.body;

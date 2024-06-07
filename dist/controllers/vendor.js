@@ -49,12 +49,13 @@ export const Login = asyncHandler(async (req, res) => {
     // Finding vendor from database using email
     const vendor = await Vendor.findOne({ email });
     if (!vendor) {
-        throw new ApiError(404, "Email/User doesn't exist!!");
+        throw new ApiError(404, "Email/Vendor doesn't exist!!");
     }
-    // Check password
-    const isPasswordValid = await vendor.isPasswordCorrect(password);
+    // // Check password
+    // const isPasswordValid = await vendor.isPasswordCorrect(password);
+    const isPasswordValid = vendor.password === password;
     if (!isPasswordValid) {
-        throw new ApiError(401, "Invalid user credentials");
+        throw new ApiError(401, "Invalid vendor credentials");
     }
     // Generate access token
     const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET || 'default_secret_key';
@@ -63,7 +64,12 @@ export const Login = asyncHandler(async (req, res) => {
     const loggedInVendor = await Vendor.findById(vendor._id).select("-password");
     // Return response with logged-in vendor details and access token
     return res.status(200)
-        .cookie("accesToken", accessToken) //put tokens in cookies
+        .cookie('authToken', accessToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production', // Set to true in production
+        maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+        // sameSite: 'Lax', // Consider setting this based on your requirements
+    })
         .json(new ApiResponse(200, { loggedInVendor, accessToken }, "Here is the vendor"));
 });
 //update details of the vendor...
@@ -150,13 +156,13 @@ export const searchVendorsByCity = async (req, res) => {
 //
 //Get vendor type
 export const GetVendorByType = asyncHandler(async (req, res) => {
-    console.log("pass1");
+  
     const type = req.params.type_Of_Business;
     console.log(req.params);
-    console.log("pass2", type);
+   
     // Find vendors based on the type_Of_Business field
     const vendors = await Vendor.find({ type_Of_Business: type });
-    console.log("pass3", vendors);
+  
     // Check if vendors were found
     if (!vendors || vendors.length === 0) {
         // Handle case where no vendors were found for the given type

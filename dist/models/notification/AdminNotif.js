@@ -1,5 +1,5 @@
 import mongoose, { Schema } from "mongoose";
-const VendorNotificationSchema = new Schema({
+const AdminNotificationSchema = new Schema({
     title: {
         type: String,
         required: true
@@ -22,5 +22,5 @@ const VendorNotificationSchema = new Schema({
         required: true
     },
 }, { timestamps: true });
-export const VendorNotificationModel = mongoose.model("VendorNotification", VendorNotificationSchema);
-export default VendorNotificationModel;
+export const AdminNotificationModel = mongoose.model("AdminNotification", AdminNotificationSchema);
+export default AdminNotificationModel;

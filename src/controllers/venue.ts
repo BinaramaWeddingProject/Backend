@@ -6,7 +6,7 @@ import { ApiError } from "../utils/apiError.js";
 import { ApiResponse } from "../utils/apiResponse.js";
 import { uploadOnCloudinary } from "../utils/cloudniary.js";
 import { Venue , IVenue} from "../models/venue.js";
-import { VenueBooking } from "../models/booking.js";
+import { VenueBooking } from "../models/booking/venuebooking.js";
 import jwt from 'jsonwebtoken';
 
 
@@ -53,8 +53,10 @@ export const Login = asyncHandler(async (req: Request, res: Response) => {
       throw new ApiError(404, "Email/User doesn't exist!!");
     }
   
-    // Check password
-    const isPasswordValid = await venue.isPasswordCorrect(password);
+    // // Check password
+  // const isPasswordValid = await vendor.isPasswordCorrect(password);
+
+ const  isPasswordValid = venue.password === password
   
     if (!isPasswordValid) {
       throw new ApiError(401, "Invalid venue credentials");

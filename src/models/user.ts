@@ -42,7 +42,7 @@ const UserSchema = new Schema<IUser>(
     },
     city:{
         type: String,
-        required: [true, "Please provide city"],
+      //  required: [true, "Please provide city"],
 
     },
     address: {
