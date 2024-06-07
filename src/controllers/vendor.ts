@@ -160,6 +160,7 @@ export const GetVendorById = asyncHandler(async(req: Request, res: Response) => 
    
         throw new ApiError(404 , "No Vendor Found!!!");
     }
+    
 
     return res.status(200).json(new ApiResponse(200 , {vendor} , "Here is the Vendor"));
 });

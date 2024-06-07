@@ -13,8 +13,8 @@ router.get('/all', adminController.getAllAdmins);
 router.get('/:id', adminController.getAdminById);
 // Route to update admin by ID
 router.route('/:id').patch(upload.array('image', 1), adminController.updateAdminProfile);
-// // Route to delete admin by ID
-// router.delete('/:id', adminController.deleteAdminById);
+// Route to delete admin by ID
+router.delete('/:id', adminController.deleteAdminById);
 // // Route to update admin profile by admin ID
 // router.put('/:id/profile', adminController.updateAdminProfileById);
 // // Route to update admin venue permissions by admin ID

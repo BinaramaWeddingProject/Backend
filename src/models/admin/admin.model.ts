@@ -10,7 +10,8 @@ export  interface IProfile {
   email: string;
   password: string;
   contact: string;
-  address: string;
+  address?: string;
+  city?: string;
   avatar: string;
   isPasswordCorrect(password: string | Buffer): Promise<boolean>;
   generateAccessToken(): string;
@@ -33,9 +34,8 @@ const profileSchema = new Schema({
   password: { type: String, required: true },
   contact: { type: String, required: true },
   address: { type: String, required: true },
-  avatar:{
-    type:String
-  }
+  city: { type: String, required: true },
+  avatar: { type:String }
 });
 
 const adminSchema = new Schema<Admin>({

@@ -156,13 +156,13 @@ export const searchVendorsByCity = async (req, res) => {
 //
 //Get vendor type
 export const GetVendorByType = asyncHandler(async (req, res) => {
-  
+    console.log("pass1");
     const type = req.params.type_Of_Business;
     console.log(req.params);
-   
+    console.log("pass2", type);
     // Find vendors based on the type_Of_Business field
     const vendors = await Vendor.find({ type_Of_Business: type });
-  
+    console.log("pass3", vendors);
     // Check if vendors were found
     if (!vendors || vendors.length === 0) {
         // Handle case where no vendors were found for the given type

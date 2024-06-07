@@ -24,8 +24,8 @@ router.route('/:id').patch(upload.array('image' , 1), adminController.updateAdmi
 
 
 
-// // Route to delete admin by ID
-// router.delete('/:id', adminController.deleteAdminById);
+// Route to delete admin by ID
+router.delete('/:id', adminController.deleteAdminById);
 
 // // Route to update admin profile by admin ID
 // router.put('/:id/profile', adminController.updateAdminProfileById);
