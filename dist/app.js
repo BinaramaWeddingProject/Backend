@@ -2,9 +2,14 @@ import express from "express";
 import cors from "cors";
 import { config } from "dotenv";
 import connectionDB from "./db/connect.js"; // Adjust the path as needed
+import morgan from "morgan";
+import helmet from "helmet";
+import multer from 'multer';
 config({
     path: "./.env",
 });
+const storage = multer.memoryStorage();
+const upload = multer({ storage });
 const app = express();
 const port = process.env.PORT || 4000;
 app.use(cors({
@@ -26,18 +31,22 @@ connectionDB()
 app.use(express.json({ limit: "16kb" }));
 app.use(express.urlencoded({ extended: true, limit: "16kb" }));
 app.use(express.static("public"));
+app.use(morgan('dev'));
+app.use(helmet());
 //Routes..
 import vendorRoutes from "./routes/vendor.js";
 import venueRoutes from "./routes/venue.js";
 import userRoutes from "./routes/user.js";
 import notificationRoutes from "./routes/notification.js";
-// import wishlistRoutes from './routes/wishlist.js';
+import wishlistRoutes from './routes/wishlist.js';
+import blogRoutes from './routes/blog.js';
 // import adminRoutes from './routes/admin.js';
 app.use("/api/v1/vendor", vendorRoutes);
 app.use("/api/v1/venue", venueRoutes);
 app.use("/api/v1/user", userRoutes);
 app.use("/api/v1/notificaiton", notificationRoutes);
-// app.use("/api/v1/", wishlistRoutes);
+app.use("/api/v1/", wishlistRoutes);
+app.use("/api/v1/blog", blogRoutes);
 // app.use("/api/v1/", adminRoutes);
 // export const prepareDummyData = async () => {
 //   try {
