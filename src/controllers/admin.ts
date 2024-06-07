@@ -11,6 +11,7 @@ import { VenueBooking } from '../models/booking/venuebooking.js';
 import { ApiError } from "../utils/apiError.js";
 import { ApiResponse } from "../utils/apiResponse.js";
 import { uploadOnCloudinary } from "../utils/cloudniary.js";
+import { RequestWithMulterFiles , RequestWithFiles } from '../types/types.js';
 
 
 
@@ -94,9 +95,10 @@ export const getAdminById = async (req: Request, res: Response) => {
   }
 };
 
+
+ 
 // Function to update admin by ID
-// Function to update admin by ID
-export const updateAdminProfile = async (req: Request, res: Response) => {
+ export const updateAdminProfile = async (req: Request, res: Response) => {
   try {
       // Extract admin ID from request parameters
       const { id } = req.params;
@@ -145,6 +147,7 @@ export const updateAdminProfile = async (req: Request, res: Response) => {
   }
 };
 
+
   // Function to delete admin by ID
   export const deleteAdminById = async (req: Request, res: Response) => {
     try {
@@ -162,22 +165,22 @@ export const updateAdminProfile = async (req: Request, res: Response) => {
   };
 
   // Function to update admin profile by admin ID
-  export const updateAdminProfileById = async (req: Request, res: Response) => {
-    try {
-      const updatedProfile = await AdminModel.findOneAndUpdate(
-        { _id: req.params.id },
-        { $set: { 'profile': req.body } },
-        { new: true }
-      );
-      if (updatedProfile) {
-        res.status(200).json(updatedProfile);
-      } else {
-        res.status(404).json({ message: 'Admin not found' });
-      }
-    } catch (error: any) {
-      res.status(500).json({ message: error.message });
-    }
-  };
+  // export const updateAdminProfileById = async (req: Request, res: Response) => {
+  //   try {
+  //     const updatedProfile = await AdminModel.findOneAndUpdate(
+  //       { _id: req.params.id },
+  //       { $set: { 'profile': req.body } },
+  //       { new: true }
+  //     );
+  //     if (updatedProfile) {
+  //       res.status(200).json(updatedProfile);
+  //     } else {
+  //       res.status(404).json({ message: 'Admin not found' });
+  //     }
+  //   } catch (error: any) {
+  //     res.status(500).json({ message: error.message });
+  //   }
+  // };
 
 
   // Function to get all vendors

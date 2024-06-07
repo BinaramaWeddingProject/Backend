@@ -73,7 +73,6 @@ export const getAdminById = async (req, res) => {
     }
 };
 // Function to update admin by ID
-// Function to update admin by ID
 export const updateAdminProfile = async (req, res) => {
     try {
         // Extract admin ID from request parameters
@@ -141,20 +140,22 @@ export const deleteAdminById = async (req, res) => {
     }
 };
 // Function to update admin profile by admin ID
-export const updateAdminProfileById = async (req, res) => {
-    try {
-        const updatedProfile = await AdminModel.findOneAndUpdate({ _id: req.params.id }, { $set: { 'profile': req.body } }, { new: true });
-        if (updatedProfile) {
-            res.status(200).json(updatedProfile);
-        }
-        else {
-            res.status(404).json({ message: 'Admin not found' });
-        }
-    }
-    catch (error) {
-        res.status(500).json({ message: error.message });
-    }
-};
+// export const updateAdminProfileById = async (req: Request, res: Response) => {
+//   try {
+//     const updatedProfile = await AdminModel.findOneAndUpdate(
+//       { _id: req.params.id },
+//       { $set: { 'profile': req.body } },
+//       { new: true }
+//     );
+//     if (updatedProfile) {
+//       res.status(200).json(updatedProfile);
+//     } else {
+//       res.status(404).json({ message: 'Admin not found' });
+//     }
+//   } catch (error: any) {
+//     res.status(500).json({ message: error.message });
+//   }
+// };
 // Function to get all vendors
 export const getAllVendors = async (req, res) => {
     try {
