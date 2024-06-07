@@ -96,6 +96,7 @@ export const UpdateVendor = asyncHandler(async (req, res) => {
 export const GetVendorById = asyncHandler(async (req, res) => {
     const { id } = req.params;
     const vendor = await Vendor.findById(id);
+    //  console.log("vendor",vendor);
     if (!vendor) {
         throw new ApiError(404, "No Vendor Found!!!");
     }
