@@ -46,6 +46,11 @@ const VenueSchema = new Schema({
     comment: {
         type: String,
     },
+    isVerified: {
+        type: String,
+        enum: ['Approved', 'Rejected', 'Pending'],
+        default: 'Pending',
+    },
     guestCapacity: {
         type: String, // it will be a range like 500-700
     },

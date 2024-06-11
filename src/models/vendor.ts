@@ -25,6 +25,7 @@ export interface IVendor extends Document {
   experience?: string;
   event_completed?: number;
   willingToTravel?: boolean;
+  isVerified?: 'Approved' | 'Rejected' | 'Pending';
   usp?: string;
   summary?: string;
   bookingPolicy?: string;
@@ -107,6 +108,11 @@ const VendorSchema = new Schema<IVendor>(
     },
     willingToTravel: {
       type: Boolean,
+    },
+    isVerified: {
+      type: String, 
+      enum: ['Approved' , 'Rejected' , 'Pending'],
+      default: 'Pending',
     },
     usp: {
       type: String,

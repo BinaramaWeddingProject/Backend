@@ -22,6 +22,7 @@ export interface IVenue extends Document {
   howToReach?: string;
   venueExpertNotes?: string;
   featuresOfVenue?: string;
+  isVerified?: 'Approved' | 'Rejected' | 'Pending';
   venuePolicies?: string;
   summary?: string;
   review?: Types.ObjectId;
@@ -74,6 +75,11 @@ const VenueSchema = new Schema<IVenue>(
     comment:{
         type: String,
       
+    },
+    isVerified: {
+      type: String, 
+      enum: ['Approved' , 'Rejected' , 'Pending'],
+      default: 'Pending',
     },
 
     guestCapacity: {

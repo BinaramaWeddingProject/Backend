@@ -95,7 +95,7 @@ export const GetUserById = asyncHandler(async(req: Request, res: Response) => {
 //Delete User bY ID
 export const DeleteUserById = asyncHandler(async(req: Request, res: Response) => {
     const { id } = req.params; 
-
+console.log("user id",id)
     const user = await User.findById(id);
      
     if(!user){
@@ -103,7 +103,7 @@ export const DeleteUserById = asyncHandler(async(req: Request, res: Response) =>
     }
 
    
-    const respose = await Vendor.findByIdAndDelete(id);
+    const respose = await User.findByIdAndDelete(id);
 
     return res.status(200).json(new ApiResponse(200 , {respose} , "User Deleted Successfully "));
 });

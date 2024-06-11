@@ -3,7 +3,6 @@ import { ApiError } from "../utils/apiError.js";
 import { ApiResponse } from "../utils/apiResponse.js";
 import { User } from "../models/user.js";
 import jwt from 'jsonwebtoken';
-import { Vendor } from "../models/vendor.js";
 //Register vendor 
 export const Register = asyncHandler(async (req, res, next) => {
     const { fullName, email, password, phone, city } = req.body;
@@ -57,11 +56,12 @@ export const GetUserById = asyncHandler(async (req, res) => {
 //Delete User bY ID
 export const DeleteUserById = asyncHandler(async (req, res) => {
     const { id } = req.params;
+    console.log("user id", id);
     const user = await User.findById(id);
     if (!user) {
         throw new ApiError(404, "No user Found!!!");
     }
-    const respose = await Vendor.findByIdAndDelete(id);
+    const respose = await User.findByIdAndDelete(id);
     return res.status(200).json(new ApiResponse(200, { respose }, "User Deleted Successfully "));
 });
 //getall users

@@ -4,10 +4,7 @@ import { config } from "dotenv";
 import connectionDB from "./db/connect.js"; // Adjust the path as needed
 import morgan from "morgan";
 import helmet from "helmet";
-<<<<<<< HEAD
-=======
 import multer from 'multer';
->>>>>>> 0f9cc7b69327c0587f7fe3f61ac0f8f803bcb431
 config({
     path: "./.env",
 });
@@ -42,23 +39,15 @@ import venueRoutes from "./routes/venue.js";
 import userRoutes from "./routes/user.js";
 import notificationRoutes from "./routes/notification.js";
 import wishlistRoutes from './routes/wishlist.js';
-<<<<<<< HEAD
 import adminRoutes from './routes/admin.js';
-=======
 import blogRoutes from './routes/blog.js';
-// import adminRoutes from './routes/admin.js';
->>>>>>> 0f9cc7b69327c0587f7fe3f61ac0f8f803bcb431
 app.use("/api/v1/vendor", vendorRoutes);
 app.use("/api/v1/venue", venueRoutes);
 app.use("/api/v1/user", userRoutes);
 app.use("/api/v1/notificaiton", notificationRoutes);
 app.use("/api/v1/", wishlistRoutes);
-<<<<<<< HEAD
 app.use("/api/v1/admin", adminRoutes);
-=======
 app.use("/api/v1/blog", blogRoutes);
-// app.use("/api/v1/", adminRoutes);
->>>>>>> 0f9cc7b69327c0587f7fe3f61ac0f8f803bcb431
 // export const prepareDummyData = async () => {
 //   try {
 //     // List of different city names
