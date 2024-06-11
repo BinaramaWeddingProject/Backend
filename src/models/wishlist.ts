@@ -19,7 +19,6 @@ const wishlistItemSchema = new Schema<WishlistItem>({
     itemType: { type: String, enum: ['vendor', 'venue'], required: true },
     selected: { type: Boolean, default: false } // Default to unselected
 });
-
 // Define schema for wishlist document
 const wishlistSchema = new Schema<Wishlist>({
     userId: { type: Schema.Types.ObjectId, required: true },
