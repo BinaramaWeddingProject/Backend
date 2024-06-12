@@ -1,11 +1,26 @@
 import { Router } from "express";
-import {  getNotificationAdmin, getNotificationUser, getNotificationVendor, getNotificationVenue, postNotificationAdmin, postNotificationUser, postNotificationVendor, postNotificationVenue, updateAdminNotification, updateUserNotification, updateVendorNotification, updateVenueNotification } from "../controllers/notification.js";
+import {
+  getNotificationAdmin,
+  getNotificationUser,
+  getNotificationVendor,
+  getNotificationVenue,
+  postNotificationAdmin,
+  postNotificationUser,
+  postNotificationVendor,
+  postNotificationVenue,
+  updateAdminNotification,
+  updateUserNotification,
+  updateVendorNotification,
+  updateVenueNotification,
+  postNotification,
+  getNotification,
+} from "../controllers/notification.js";
 
 const router = Router();
 
 //notification
 
-//vendor 
+//vendor
 router.route("/notificationvendor").post(postNotificationVendor);
 router.route("/getnotificationvendor/:id").get(getNotificationVendor);
 router.route("/getnotificationvenue/:id").put(updateVendorNotification);
@@ -24,5 +39,9 @@ router.route("/getnotificationvenue/:id").put(updateUserNotification);
 router.route("/notificationvenue").post(postNotificationAdmin);
 router.route("/getnotificationvenue/:id").get(getNotificationAdmin);
 router.route("/getnotificationvenue/:id").put(updateAdminNotification);
+
+//all vendor
+router.route("/city").post(postNotification);
+router.route("/:vendorId").get(getNotification);
 
 export default router;

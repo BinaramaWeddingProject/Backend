@@ -1,8 +1,271 @@
+import { Vendor } from "../models/vendor.js";
 import { asyncHandler } from "../utils/asynHandler.js";
+import { User } from "../models/user.js";
 import VendorNotificationModel from "../models/notification/VendorNotif.js";
 import VenueNotificationModel from "../models/notification/VenueNotif.js";
 import AdminNotificationModel from "../models/notification/AdminNotif.js";
 import UserNotificationModel from "../models/notification/UserNotif.js";
+import NotificationModel from "../models/notification/notification.js";
+import { Venue } from "../models/venue.js";
+// export const postNotification = asyncHandler(
+//   async (req: Request, res: Response, next: NextFunction) => {
+//     try {
+//       const { userId, city } = req.body;
+//       const vendors = await Vendor.find({ city });
+//       var vendorIds,
+//        if (!userId){
+//        if(vendors){
+//       vendorIds = vendors.map((vendor) => vendor._id);
+//       // Create a new notification instance
+//       const newNotification: INotification = new NotificationModel({
+//         vendorIds,
+//         userId,
+//         city,
+//       });
+//       // Save the notification to the database
+//       const savedNotification: INotification = await newNotification.save();
+//       // Send a success response
+//       res.status(201).json({ notification: savedNotification });
+//         } else { return "no vendors found" }
+//       } else {
+//       }
+//     } catch (error) {
+//       next(error);
+//     }
+//   }
+// );
+// export const postNotification = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+//   try {
+//       const { userId, city } = req.body;
+//       // Fetch all vendors for the given city
+//       const vendors = await Vendor.find({ city });
+//       const venue= await Venue.find({city});
+//       if (!vendors.length && !venue.length) {
+//           return res.status(404).json({ error: 'No vendors found' });
+//       }
+//       const vendorIds = vendors.map(vendor => vendor._id);
+//       // If userId is available, update the existing notification
+//       if (userId) {
+//           let existingNotification = await NotificationModel.findOne({ userId });
+//           // Check if existingNotification is null
+//           if (!existingNotification) {
+//               return res.status(404).json({ error: 'Notification not found' });
+//           }
+//           // Check if existingNotification.vendorIds is undefined
+//           if (existingNotification.vendorIds === undefined) {
+//               existingNotification.vendorIds = [];
+//           }
+//           // Check if the city already exists in the city array
+//           if (!existingNotification.city.includes(city)) {
+//               // If the city doesn't exist, add it to the city array
+//               existingNotification.city.push(city);
+//           }
+//           // Add new vendorIds to the existing ones if they are not already present
+//           vendorIds.forEach(vendorId => {
+//               if (!existingNotification?.vendorIds?.includes(vendorId)) {
+//                   existingNotification!.vendorIds!.push(vendorId);
+//               }
+//           });
+//           // Save the updated notification
+//           existingNotification = await existingNotification.save();
+//           // Send a success response
+//           return res.json({ notification: existingNotification });
+//       }
+//       // If userId is not available, create a new notification
+//       const newNotification = new NotificationModel({
+//           vendorIds,
+//           userId,
+//           city: [city], // Start with an array containing the new city
+//       });
+//       // Save the notification to the database
+//       const savedNotification = await newNotification.save();
+//       // Send a success response
+//       res.status(201).json({ notification: savedNotification });
+//   } catch (error) {
+//       next(error);
+//   }
+// });
+// export const postNotification = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+//   try {
+//       const { userId, city, flag } = req.body;
+//       // Fetch all vendors and venues for the given city
+//       const vendors = await Vendor.find({ city });
+//       const venues = await Venue.find({ city });
+//       if (!vendors.length && !venues.length) {
+//           return res.status(404).json({ error: 'No vendors or venues found' });
+//       }
+//       const vendorIds = vendors.map(vendor => vendor._id);
+//       const venueIds = venues.map(venue => venue._id);
+//       // If userId is available, update the existing notification
+//       if (userId) {
+//           let existingNotification = await NotificationModel.findOne({ userId });
+//           // Check if existingNotification is null
+//           if (!existingNotification) {
+//               return res.status(404).json({ error: 'Notification not found' });
+//           }
+//           // Check if existingNotification.vendorIds is undefined
+//           if (existingNotification.vendorIds === undefined) {
+//               existingNotification.vendorIds = [];
+//           }
+//           // Check if the city already exists in the city array
+//           if (!existingNotification.city.includes(city)) {
+//               // If the city doesn't exist, add it to the city array
+//               existingNotification.city.push(city);
+//           }
+//           // Add new vendorIds to the existing ones if they are not already present
+//           vendorIds.forEach(vendorId => {
+//               if (!existingNotification?.vendorIds?.includes(vendorId)) {
+//                   existingNotification!.vendorIds!.push(vendorId);
+//               }
+//           });
+//           // Add new venueIds to the existing ones if they are not already present
+//           venueIds.forEach(venueId => {
+//               if (!existingNotification?.venueIds?.includes(venueId)) {
+//                   existingNotification!.venueIds!.push(venueId);
+//               }
+//           });
+//           // Save the updated notification
+//           existingNotification = await existingNotification.save();
+//           // Send a success response
+//           return res.json({ notification: existingNotification });
+//       }
+//       // If userId is not available, create a new notification
+//       const newNotification = new NotificationModel({
+//           vendorIds,
+//           venueIds,
+//           userId,
+//           city: [city], // Start with an array containing the new city
+//       });
+//       // Save the notification to the database
+//       const savedNotification = await newNotification.save();
+//       // Send a success response
+//       res.status(201).json({ notification: savedNotification });
+//   } catch (error) {
+//       next(error);
+//   }
+// });
+export const postNotification = asyncHandler(async (req, res, next) => {
+    try {
+        const { userId, city, flag } = req.body;
+        // Fetch all vendors and venues for the given city
+        let vendorIds = [];
+        let venueIds = [];
+        if (flag === "vendor") {
+            const vendors = await Vendor.find({ city });
+            if (!vendors.length) {
+                return res.status(404).json({ error: "No vendors found" });
+            }
+            vendorIds = vendors.map((vendor) => vendor._id);
+        }
+        else if (flag === "venue") {
+            const venues = await Venue.find({ city });
+            if (!venues.length) {
+                return res.status(404).json({ error: "No venues found" });
+            }
+            venueIds = venues.map((venue) => venue._id);
+        }
+        else {
+            return res.status(400).json({ error: "Invalid flag value" });
+        }
+        // If userId is available, update the existing notification
+        if (userId) {
+            let existingNotification = await NotificationModel.findOne({ userId });
+            // Check if existingNotification is null
+            if (!existingNotification) {
+                return res.status(404).json({ error: "Notification not found" });
+            }
+            // Check if existingNotification.vendorIds is undefined
+            if (existingNotification.vendorIds === undefined) {
+                existingNotification.vendorIds = [];
+            }
+            // Check if the city already exists in the city array
+            if (!existingNotification.city.includes(city)) {
+                // If the city doesn't exist, add it to the city array
+                existingNotification.city.push(city);
+            }
+            // Add new vendorIds to the existing ones if they are not already present
+            vendorIds.forEach((vendorId) => {
+                if (!existingNotification?.vendorIds?.includes(vendorId)) {
+                    existingNotification.vendorIds.push(vendorId);
+                }
+            });
+            // Add new venueIds to the existing ones if they are not already present
+            venueIds.forEach((venueId) => {
+                if (!existingNotification?.venueIds?.includes(venueId)) {
+                    existingNotification.venueIds.push(venueId);
+                }
+            });
+            // Save the updated notification
+            existingNotification = await existingNotification.save();
+            // Send a success response
+            return res.json({ notification: existingNotification });
+        }
+        // If userId is not available, create a new notification
+        const newNotification = new NotificationModel({
+            vendorIds,
+            venueIds,
+            userId,
+            city: [city], // Start with an array containing the new city
+        });
+        // Save the notification to the database
+        const savedNotification = await newNotification.save();
+        // Send a success response
+        res.status(201).json({ notification: savedNotification });
+    }
+    catch (error) {
+        next(error);
+    }
+});
+// export const getNotification = asyncHandler(
+//   async (req: Request, res: Response, next: NextFunction) => {
+//     try {
+//       const { vendorId } = req.params;
+//       console.log("vendor id", vendorId);
+//       const notifications = await NotificationModel.find({
+//         vendorIds: { $in: vendorId },
+//       });
+//       const userIds = notifications.map((notification) => notification.userId);
+//       const users = await User.find({ _id: { $in: userIds } });
+//       res.json({ users });
+//     } catch (error) {
+//       next(error);
+//     }
+//   }
+// );
+export const getNotification = asyncHandler(async (req, res, next) => {
+    try {
+        const { vendorId } = req.params;
+        console.log("vendor id", vendorId);
+        // Find notifications related to vendors
+        const vendorNotifications = await NotificationModel.find({
+            vendorIds: { $in: vendorId },
+        });
+        const vendorUserIds = vendorNotifications.map((notification) => notification.userId);
+        // Find notifications related to venues
+        const venueNotifications = await NotificationModel.find({
+            venueIds: { $in: vendorId },
+        });
+        const venueUserIds = venueNotifications.map((notification) => notification.userId);
+        // Merge user IDs from both vendor and venue notifications
+        const userIds = [...vendorUserIds, ...venueUserIds];
+        // Fetch users based on the merged user IDs
+        const users = await User.find({ _id: { $in: userIds } });
+        res.json({ users });
+    }
+    catch (error) {
+        next(error);
+    }
+});
+// export const updateNotification = asyncHandler(
+//   async (req: Request, res: Response, next: NextFunction) => {
+//     try {
+//       const { id, city } = req.body;
+//     }
+//     catch (error) {
+//       next(error);
+//     }
+//   }
+// )
 export const postNotificationVendor = asyncHandler(async (req, res, next) => {
     try {
         const { userId, venueId, message } = req.body;
@@ -35,7 +298,7 @@ export const getNotificationVendor = asyncHandler(async (req, res, next) => {
         res.status(200).json({
             success: true,
             // notification
-            id
+            id,
         });
     }
     catch (error) {
@@ -104,7 +367,7 @@ export const getNotificationVenue = asyncHandler(async (req, res, next) => {
         res.status(200).json({
             success: true,
             // notification
-            id
+            id,
         });
     }
     catch (error) {
@@ -171,7 +434,7 @@ export const getNotificationUser = asyncHandler(async (req, res, next) => {
         res.status(200).json({
             success: true,
             // notification
-            id
+            id,
         });
     }
     catch (error) {
@@ -240,7 +503,7 @@ export const getNotificationAdmin = asyncHandler(async (req, res, next) => {
         res.status(200).json({
             success: true,
             // notification
-            id
+            id,
         });
     }
     catch (error) {
