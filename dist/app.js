@@ -44,7 +44,7 @@ import blogRoutes from './routes/blog.js';
 app.use("/api/v1/vendor", vendorRoutes);
 app.use("/api/v1/venue", venueRoutes);
 app.use("/api/v1/user", userRoutes);
-app.use("/api/v1/notificaiton", notificationRoutes);
+app.use("/api/v1/notification", notificationRoutes);
 app.use("/api/v1/", wishlistRoutes);
 app.use("/api/v1/admin", adminRoutes);
 app.use("/api/v1/blog", blogRoutes);
