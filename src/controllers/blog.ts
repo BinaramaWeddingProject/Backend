@@ -1,6 +1,6 @@
-import { NextFunction, Request, Response } from "express";
+import {  Request, Response } from "express";
 import { asyncHandler } from "../utils/asynHandler.js";
-import blogModel, { IBlog } from "../models/blogs.js";
+import BlogModel, { IBlog } from "../models/blogs.js";
 import { ApiResponse } from "../utils/apiResponse.js";
 import { ApiError } from "../utils/apiError.js";
 import { uploadOnCloudinary } from "../utils/cloudniary.js";
@@ -13,7 +13,7 @@ export const addItemToBloglist = async (req: Request, res: Response) => {
   
       if (!givenFiles || givenFiles.length === 0) {
         // No files were uploaded
-        const blog = await blogModel.create({
+        const blog = await BlogModel.create({
           title,
           content,
           images: [], // Set an empty array for images
@@ -25,7 +25,7 @@ export const addItemToBloglist = async (req: Request, res: Response) => {
   
       // Files were uploaded
       const imageUrls = await uploadOnCloudinary(givenFiles);
-      const blog = await blogModel.create({
+      const blog = await BlogModel.create({
         title,
         content,
         images: imageUrls,
@@ -44,7 +44,7 @@ export const addItemToBloglist = async (req: Request, res: Response) => {
 export const GetBlogById = asyncHandler(async(req: Request,res: Response)=>{
     const {id} = req.params;
 
-    const blog = await blogModel.findById(id);
+    const blog = await BlogModel.findById(id);
 
     if(!blog){
         throw new ApiError(404, "No Blog Found!!");
@@ -57,14 +57,14 @@ export const GetBlogById = asyncHandler(async(req: Request,res: Response)=>{
 export const DeleteblogById = asyncHandler(async(req: Request, res: Response) => {
     const { id } = req.params; 
 
-    const blog = await blogModel.findById(id);
+    const blog = await BlogModel.findById(id);
      
     if(!blog){
         throw new ApiError(404 , "No blog Found!!!");
     }
 
    
-    const response = await blogModel.findByIdAndDelete(id);
+    const response = await BlogModel.findByIdAndDelete(id);
 
     return res.status(200).json(new ApiResponse(200 , {response} , "blog Deleted Successfully "));
 });
@@ -77,7 +77,7 @@ export const UpdateBlog = asyncHandler(async (req: Request, res: Response) => {
     const updateFields: Partial<IBlog> = req.body;
     const givenFiles = req.files as Express.Multer.File[];
   
-    const blog = await blogModel.findById(id);
+    const blog = await BlogModel.findById(id);
   
     if (!blog) {
       throw new ApiError(404, "No blog Found!!!");
@@ -104,7 +104,7 @@ export const UpdateBlog = asyncHandler(async (req: Request, res: Response) => {
 
   //get all blogs
   export const getAllBlogs = asyncHandler(async(req: Request, res: Response) =>{
-    const blog = await blogModel.find();
+    const blog = await BlogModel.find();
 
     if(!blog || blog.length === 0){
         throw new ApiError(404 , "No blog in DB");
@@ -114,4 +114,3 @@ export const UpdateBlog = asyncHandler(async (req: Request, res: Response) => {
         new ApiResponse(200 , {blog}, "here are the blogs.")
     )
 })
-
