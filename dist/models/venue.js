@@ -1,4 +1,4 @@
-import mongoose, { Schema, Types } from "mongoose";
+import mongoose, { Schema } from "mongoose";
 import validator from "validator";
 import bcrypt from "bcrypt";
 import dotenv from 'dotenv';
@@ -75,12 +75,11 @@ const VenueSchema = new Schema({
         type: String,
     },
     review: {
-        type: Types.ObjectId,
+        type: [mongoose.Types.ObjectId],
         ref: "Review",
     },
     foodPackages: {
-        type: Types.ObjectId,
-        ref: "FoodPackage",
+        type: String,
     },
 }, {
     timestamps: true,

@@ -86,7 +86,7 @@ const VendorSchema = new Schema({
         type: String,
     },
     review: {
-        type: mongoose.Types.ObjectId,
+        type: [mongoose.Types.ObjectId],
         ref: "Review",
     },
     refreshToken: {

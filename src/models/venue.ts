@@ -24,8 +24,8 @@ export interface IVenue extends Document {
   featuresOfVenue?: string;
   venuePolicies?: string;
   summary?: string;
-  review?: Types.ObjectId;
-  foodPackages?: Types.ObjectId;
+  review?:mongoose.Types.ObjectId[];
+  foodPackages?: string
   isPasswordCorrect(password: string | Buffer): Promise<boolean>;
 }
 
@@ -105,12 +105,12 @@ const VenueSchema = new Schema<IVenue>(
       type: String,
     },
     review: {
-      type: Types.ObjectId,
+      type: [mongoose.Types.ObjectId],
       ref: "Review",
     },
     foodPackages: {
-      type: Types.ObjectId,
-      ref: "FoodPackage",
+      type: String,
+     
     },
   },
   {
