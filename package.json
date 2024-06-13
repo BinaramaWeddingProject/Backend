@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "start": "node dist/app.js",
-    "build": "tsc --project tsconfig.json && tsc-alias",
+    "build": "tsc --noEmit && node ./dist/app.js",
     "watch": "tsc -w",
     "dev": "nodemon dist/app.js"
   },
