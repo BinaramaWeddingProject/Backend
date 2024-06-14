@@ -162,6 +162,7 @@ export const getNotificationByIdStatus = asyncHandler(async (req, res, next) => 
         const { nId } = req.params;
         // const { vId } = req.body; // Extract vId from request body
         const vId = req.query.vId; // Extract vId from query parameters
+        console.log(vId);
         const notification = await NotificationModel.findById(nId);
         console.log("hello bete");
         // Check if the notification exists
@@ -186,6 +187,28 @@ export const getNotificationByIdStatus = asyncHandler(async (req, res, next) => 
         }
         // Return the status
         res.status(200).json({ success: true, status });
+    }
+    catch (error) {
+        next(error);
+    }
+});
+export const getAllNotificationsByVendorId = asyncHandler(async (req, res, next) => {
+    try {
+        const { vId } = req.params;
+        // Find notifications related to vendors
+        const vendorNotifications = await NotificationModel.find({
+            "vendors.vendorId": vId,
+        });
+        // Find notifications related to venues
+        const venueNotifications = await NotificationModel.find({
+            "venues.venueId": vId,
+        });
+        const notifications = [...vendorNotifications, ...venueNotifications];
+        // console.log("notification", vendorNotifications)
+        res.status(200).json({
+            success: true,
+            status: notifications, // Return the updated status in the response
+        });
     }
     catch (error) {
         next(error);

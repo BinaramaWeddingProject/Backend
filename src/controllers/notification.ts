@@ -28,13 +28,13 @@ export const postNotification = asyncHandler(
         if (!vendors.length) {
           return res.status(404).json({ error: "No vendors found" });
         }
-        vendorIds = vendors.map((vendor) => vendor._id);
+        vendorIds = vendors.map((vendor) => vendor._id as string);
       } else if (flag === "venue") {
         const venues = await Venue.find({ city });
         if (!venues.length) {
           return res.status(404).json({ error: "No venues found" });
         }
-        venueIds = venues.map((venue) => venue._id);
+        venueIds = venues.map((venue) => venue._id as string);
       } else {
         return res.status(400).json({ error: "Invalid flag value" });
       }
@@ -78,14 +78,14 @@ export const postNotification = asyncHandler(
             const vendorsForCity = await Vendor.find({ city: existingCity });
             vendorsForCity.forEach((vendor) => {
               if (!existingNotification?.vendors?.some((v) => String(v.vendorId) === String(vendor._id))) {
-                existingNotification!.vendors!.push({ vendorId: vendor._id, status: "unread" });
+                existingNotification!.vendors!.push({ vendorId: vendor._id as string, status: "unread" });
               }
             });
           } else if (flag === "venue") {
             const venuesForCity = await Venue.find({ city: existingCity });
             venuesForCity.forEach((venue) => {
               if (!existingNotification?.venues?.some((v) => String(v.venueId) === String(venue._id))) {
-                existingNotification!.venues!.push({ venueId: venue._id, status: "unread" });
+                existingNotification!.venues!.push({ venueId: venue._id as string, status: "unread" });
               }
             });
           }
@@ -204,8 +204,10 @@ export const getNotificationByIdStatus = asyncHandler(
       const { nId } = req.params;
       // const { vId } = req.body; // Extract vId from request body
       const vId = req.query.vId as string; // Extract vId from query parameters
+      console.log(vId);
       const notification = await NotificationModel.findById(nId);
       console.log("hello bete")
+
       
       // Check if the notification exists
       if (!notification) {
@@ -234,4 +236,32 @@ export const getNotificationByIdStatus = asyncHandler(
     }
   }
 );
+
+export const getAllNotificationsByVendorId = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { vId } = req.params;
+
+      // Find notifications related to vendors
+    const vendorNotifications = await NotificationModel.find({
+      "vendors.vendorId": vId,
+    });
+
+    // Find notifications related to venues
+    const venueNotifications = await NotificationModel.find({
+      "venues.venueId": vId,
+    });
+
+    const notifications = [...vendorNotifications, ...venueNotifications];
+// console.log("notification", vendorNotifications)
+res.status(200).json({
+  success: true,
+  status: notifications, // Return the updated status in the response
+});
+  }
+  catch (error) {
+    next(error);
+  }
+  }
+)
 
