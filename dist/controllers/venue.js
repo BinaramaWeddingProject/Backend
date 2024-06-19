@@ -6,10 +6,10 @@ import { Venue } from "../models/venue.js";
 import jwt from 'jsonwebtoken';
 //Register Venu
 export const Register = asyncHandler(async (req, res, next) => {
-    const { businessName, yourName, email, password, phone, city, comments } = req.body;
+    const { businessName, yourName, email, password, phone, city, comments, venueType, facilities, foodPackages } = req.body;
     console.log(businessName, yourName, email, password, phone, city, comments);
     const venue = await Venue.create({
-        businessName, yourName, email, password, phone, city, comments
+        businessName, yourName, email, password, phone, city, comments, venueType, facilities, foodPackages
     });
     if (!venue) {
         throw new ApiError(500, "something went wrong while registering the vendor!!");
@@ -73,6 +73,7 @@ export const UpdateVenue = asyncHandler(async (req, res) => {
             venue[key] = value;
         }
     }
+    console.log(venue);
     await venue.save();
     return res.status(200).json(new ApiResponse(200, "Venue Updated Successfully!!"));
 });
@@ -87,23 +88,49 @@ export const DeleteVenueById = asyncHandler(async (req, res) => {
     return res.status(200).json(new ApiResponse(200, { respose }, "Vendor Deleted Successfully "));
 });
 // Function to get all venues with optional filters
-export const ShowAllVenues = asyncHandler(async (req, res) => {
-    const { city, guestCapacity } = req.query;
-    console.log(city, guestCapacity);
-    // Build the filter object
-    const filter = {};
-    if (city) {
-        filter.city = city;
+export const filterVenues = async (req, res) => {
+    try {
+        // Extract filter criteria from query parameters
+        const { city, minGuests, maxGuests, foodPackage, facilities, venueTypes } = req.query;
+        console.log(city, minGuests, maxGuests, foodPackage, facilities, venueTypes);
+        // Build the filter criteria object
+        const filterCriteria = {};
+        if (city) {
+            filterCriteria.city = city;
+        }
+        if (minGuests || maxGuests) {
+            filterCriteria.guestCapacity = {};
+            if (minGuests)
+                filterCriteria.guestCapacity.$gte = Number(minGuests);
+            if (maxGuests)
+                filterCriteria.guestCapacity.$lte = Number(maxGuests);
+        }
+        if (foodPackage) {
+            filterCriteria.foodPackages = foodPackage;
+        }
+        if (facilities) {
+            filterCriteria.facilities = { $all: facilities.split(',') };
+        }
+        if (venueTypes) {
+            filterCriteria.venueType = { $in: venueTypes.split(',') };
+        }
+        // Perform the query
+        const venues = await Venue.find(filterCriteria);
+        // Return the filtered venues
+        res.status(200).json({
+            success: true,
+            data: venues
+        });
     }
-    if (guestCapacity) {
-        filter.guestCapacity = guestCapacity;
+    catch (error) {
+        console.error('Error fetching venues:', error);
+        res.status(500).json({
+            success: false,
+            message: 'An error occurred while fetching venues',
+            error: error.message
+        });
     }
-    const venues = await Venue.find(filter);
-    if (!venues || venues.length === 0) {
-        throw new ApiError(404, "No vendors in DB");
-    }
-    return res.status(200).json(new ApiResponse(200, { venues }, "Here are all vendors."));
-});
+};
 // search by the city
 export const searchvenuesByCity = async (req, res) => {
     const { city } = req.params; // Get the city query parameter from the request

@@ -16,11 +16,11 @@ export const Register = asyncHandler(async(
     res:Response,
     next: NextFunction) =>{
 
-        const {businessName ,yourName,  email , password , phone , city , comments  } = req.body;
+        const {businessName ,yourName,  email , password , phone , city , comments  , venueType , facilities , foodPackages } = req.body;
         console.log(businessName ,yourName,  email , password , phone , city , comments)
 
         const venue = await Venue.create({
-            businessName ,yourName,  email , password , phone , city , comments
+            businessName ,yourName,  email , password , phone , city , comments ,venueType , facilities , foodPackages
             
         });
 
@@ -124,7 +124,7 @@ export const UpdateVenue = asyncHandler(async (req: Request, res: Response) => {
     
     }
   }
- 
+ console.log(venue)
   await venue.save();
   return res.status(200).json(new ApiResponse(200, "Venue Updated Successfully!!"));
 });
@@ -150,29 +150,53 @@ export const DeleteVenueById = asyncHandler(async(req: Request, res: Response) =
 
 
 // Function to get all venues with optional filters
-export const ShowAllVenues = asyncHandler(async (req: Request, res: Response) => {
-  const { city, guestCapacity } = req.query;
- console.log(city , guestCapacity)
-  // Build the filter object
-  const filter: any = {};
-  if (city) {
-    filter.city = city;
+export const filterVenues = async (req: Request, res: Response) => {
+  try {
+    // Extract filter criteria from query parameters
+    const { city, minGuests, maxGuests, foodPackage, facilities, venueTypes } = req.query;
+    console.log(city, minGuests, maxGuests, foodPackage, facilities, venueTypes)
+    // Build the filter criteria object
+    const filterCriteria: any = {};
+
+    if (city) {
+      filterCriteria.city = city;
+    }
+
+    if (minGuests || maxGuests) {
+      filterCriteria.guestCapacity = {};
+      if (minGuests) filterCriteria.guestCapacity.$gte = Number(minGuests);
+      if (maxGuests) filterCriteria.guestCapacity.$lte = Number(maxGuests);
+    }
+
+    if (foodPackage) {
+      filterCriteria.foodPackages = foodPackage;
+    }
+
+    if (facilities) {
+      filterCriteria.facilities = { $all: (facilities as string).split(',') };
+    }
+
+    if (venueTypes) {
+      filterCriteria.venueType = { $in: (venueTypes as string).split(',') };
+    }
+
+    // Perform the query
+    const venues = await Venue.find(filterCriteria);
+
+    // Return the filtered venues
+    res.status(200).json({
+      success: true,
+      data: venues
+    });
+  } catch (error) {
+    console.error('Error fetching venues:', error);
+    res.status(500).json({
+      success: false,
+      message: 'An error occurred while fetching venues',
+      error: error.message
+    });
   }
-  if (guestCapacity) {
-    filter.guestCapacity = guestCapacity;
-  }
-
-  const venues = await Venue.find(filter);
-
-  if (!venues || venues.length === 0) {
-    throw new ApiError(404, "No vendors in DB");
-  } 
-
-  return res.status(200).json(
-    new ApiResponse(200, { venues }, "Here are all vendors.")
-  );
-});
-
+};
 
 
 // search by the city

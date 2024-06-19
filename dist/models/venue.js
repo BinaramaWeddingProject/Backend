@@ -1,4 +1,4 @@
-import mongoose, { Schema } from "mongoose";
+import mongoose, { Schema, Types } from "mongoose";
 import validator from "validator";
 import bcrypt from "bcrypt";
 import dotenv from 'dotenv';
@@ -10,7 +10,7 @@ const VenueSchema = new Schema({
     },
     businessName: {
         type: String,
-        required: [true, "Please provide businessname"],
+        required: [true, "Please provide business name"],
     },
     email: {
         type: String,
@@ -25,7 +25,7 @@ const VenueSchema = new Schema({
     },
     password: {
         type: String,
-        required: [true, 'password is required'],
+        required: [true, 'Password is required'],
     },
     phone: {
         type: String,
@@ -33,15 +33,14 @@ const VenueSchema = new Schema({
     },
     address: {
         type: String,
-        //  required: [true, "Please provide address"],
     },
     city: {
         type: String,
         required: [true, "Please provide your city"],
+        index: true, // Add index for efficient filtering
     },
     state: {
         type: String,
-        //   required: [true, "Please provide your State"],
     },
     comment: {
         type: String,
@@ -51,7 +50,6 @@ const VenueSchema = new Schema({
     },
     images: {
         type: [String],
-        //  required: [true, "Please add images"],
     },
     description: {
         type: String,
@@ -75,11 +73,49 @@ const VenueSchema = new Schema({
         type: String,
     },
     review: {
-        type: [mongoose.Types.ObjectId],
+        type: [Types.ObjectId],
         ref: "Review",
     },
     foodPackages: {
         type: String,
+    },
+    venueType: {
+        type: [String],
+        // enum: [
+        //   "Banquet Halls",
+        //   "Wedding Lawns",
+        //   "Beachside Venues",
+        //   "Garden Venues",
+        //   "Rooftop Venues",
+        //   // Add more types as needed
+        // ],
+    },
+    facilities: {
+        type: [String],
+        // required:false,
+        // enum: [
+        //   "Food provided by venue",
+        //   "Alcohol allowed",
+        //   "Outside food allowed",
+        //   "Music allowed late",
+        //   "Valet parking",
+        //   "Sea view",
+        //   "Catering services",
+        //   "Live music",
+        //   "City view",
+        //   "Open bar",
+        //   "AV equipment",
+        //   "Free WiFi",
+        //   "Swimming pool",
+        //   "Spa services",
+        //   "Ample parking",
+        //   "Air conditioning",
+        //   "Private beach",
+        //   "Water sports",
+        //   "In-house decor",
+        //   "DJ services",
+        //   // Add more facilities as needed
+        // ],
     },
 }, {
     timestamps: true,

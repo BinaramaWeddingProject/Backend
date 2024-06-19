@@ -35,6 +35,7 @@ export interface IVendor extends Document {
   generateAccessToken(): string;
   generateRefreshToken(): string;
   refreshToken?: string;
+  isVerified?: 'Approved' | 'Rejected' | 'Pending';
   createdAt: Date;
   updatedAt: Date;
 }
@@ -130,6 +131,13 @@ const VendorSchema = new Schema<IVendor>(
     refreshToken: {
       type: String,
     },
+   
+    isVerified: {
+      type: String, 
+      enum: ['Approved' , 'Rejected' , 'Pending'],
+      default: 'Pending',
+    },
+
   },
   {
     timestamps: true,

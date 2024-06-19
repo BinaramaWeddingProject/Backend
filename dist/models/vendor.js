@@ -92,6 +92,11 @@ const VendorSchema = new Schema({
     refreshToken: {
         type: String,
     },
+    isVerified: {
+        type: String,
+        enum: ['Approved', 'Rejected', 'Pending'],
+        default: 'Pending',
+    },
 }, {
     timestamps: true,
 });

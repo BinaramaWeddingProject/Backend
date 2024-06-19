@@ -4,17 +4,16 @@ import bcrypt from "bcrypt";
 import dotenv from 'dotenv';
 dotenv.config();
 
-// Define the structure of the venue
 export interface IVenue extends Document {
-   yourName: string;
-   businessName:string;
+  yourName: string;
+  businessName: string;
   email: string;
-  password:string;
+  password: string;
   phone: string;
   address: string;
   city: string;
   state: string;
-  comment:string;
+  comment: string;
   guestCapacity?: string;
   images: string[];
   description?: string;
@@ -24,8 +23,10 @@ export interface IVenue extends Document {
   featuresOfVenue?: string;
   venuePolicies?: string;
   summary?: string;
-  review?:mongoose.Types.ObjectId[];
-  foodPackages?: string
+  review?: Types.ObjectId[];
+  foodPackages?: string;
+  venueType?: string[];
+  facilities?: string[];
   isPasswordCorrect(password: string | Buffer): Promise<boolean>;
 }
 
@@ -35,53 +36,48 @@ const VenueSchema = new Schema<IVenue>(
       type: String,
       required: [true, "Please provide name"],
     },
-    businessName:{
-        type: String,
-      required: [true, "Please provide businessname"],
-
+    businessName: {
+      type: String,
+      required: [true, "Please provide business name"],
     },
     email: {
-        type: String,
-        required: [true, "Please enter email"],
-        unique: true,
-        trim: true,
-        lowercase: true,
-        validate: {
-          validator: (value: string) => validator.isEmail(value),
-          message: (props: any) => `${props.value} is not a valid email address!`,
-        },
+      type: String,
+      required: [true, "Please enter email"],
+      unique: true,
+      trim: true,
+      lowercase: true,
+      validate: {
+        validator: (value: string) => validator.isEmail(value),
+        message: (props: any) => `${props.value} is not a valid email address!`,
       },
+    },
     password: {
-        type: String,
-        required: [true, 'password is required'],
-      },
+      type: String,
+      required: [true, 'Password is required'],
+    },
     phone: {
       type: String,
       required: [true, "Please provide contact number"],
     },
     address: {
       type: String,
-    //  required: [true, "Please provide address"],
     },
     city: {
       type: String,
       required: [true, "Please provide your city"],
+      index: true, // Add index for efficient filtering
     },
     state: {
       type: String,
-   //   required: [true, "Please provide your State"],
     },
-    comment:{
-        type: String,
-      
+    comment: {
+      type: String,
     },
-
     guestCapacity: {
       type: String, // it will be a range like 500-700
     },
     images: {
       type: [String],
-    //  required: [true, "Please add images"],
     },
     description: {
       type: String,
@@ -105,12 +101,49 @@ const VenueSchema = new Schema<IVenue>(
       type: String,
     },
     review: {
-      type: [mongoose.Types.ObjectId],
+      type: [Types.ObjectId],
       ref: "Review",
     },
     foodPackages: {
       type: String,
-     
+    },
+    venueType: {
+      type: [String],
+      // enum: [
+      //   "Banquet Halls",
+      //   "Wedding Lawns",
+      //   "Beachside Venues",
+      //   "Garden Venues",
+      //   "Rooftop Venues",
+      //   // Add more types as needed
+      // ],
+    },
+    facilities: {
+      type: [String],
+      // required:false,
+      // enum: [
+      //   "Food provided by venue",
+      //   "Alcohol allowed",
+      //   "Outside food allowed",
+      //   "Music allowed late",
+      //   "Valet parking",
+      //   "Sea view",
+      //   "Catering services",
+      //   "Live music",
+      //   "City view",
+      //   "Open bar",
+      //   "AV equipment",
+      //   "Free WiFi",
+      //   "Swimming pool",
+      //   "Spa services",
+      //   "Ample parking",
+      //   "Air conditioning",
+      //   "Private beach",
+      //   "Water sports",
+      //   "In-house decor",
+      //   "DJ services",
+      //   // Add more facilities as needed
+      // ],
     },
   },
   {
@@ -118,20 +151,16 @@ const VenueSchema = new Schema<IVenue>(
   }
 );
 
-
-
 // Password encryption
 VenueSchema.pre("save", async function (next) {
-    if (!this.isModified("password")) return next();
-    this.password = await bcrypt.hash(this.password, 10);
-    next();
-  });
-  
-  
-  // Compare the password
-  VenueSchema.methods.isPasswordCorrect = async function (password: string | Buffer) {
-    return await bcrypt.compare(password, this.password);
-  }
-  
+  if (!this.isModified("password")) return next();
+  this.password = await bcrypt.hash(this.password, 10);
+  next();
+});
+
+// Compare the password
+VenueSchema.methods.isPasswordCorrect = async function (password: string | Buffer) {
+  return await bcrypt.compare(password, this.password);
+}
 
 export const Venue = mongoose.model<IVenue>("Venue", VenueSchema);

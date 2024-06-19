@@ -66,6 +66,7 @@ import notificationRoutes from "./routes/notification.js"
 import wishlistRoutes from './routes/wishlist.js';
 import adminRoutes from './routes/admin.js';
 import blogRoutes from './routes/blog.js';
+// import { addDemoVenues } from "./dummy.js";
 
 
 app.use("/api/v1/vendor", vendorRoutes);
@@ -78,7 +79,7 @@ app.use("/api/v1/blog",blogRoutes)
 
 
 
-
+// addDemoVenues();
 
 
 // export const prepareDummyData = async () => {
@@ -136,50 +137,3 @@ app.use("/api/v1/blog",blogRoutes)
 
 
 
-// const generateVenueData = () => {
-//     const venues = [];
-//     for (let i = 0; i < 50; i++) {
-//       const venue = {
-//         yourName: `Owner ${i}`,
-//         businessName: `Venue ${i}`,
-//         email: `owner${i}@venue.com`,
-//         password: "password123",
-//         phone: "1234567890",
-//         address: `Address ${i}`,
-//         city: "City",
-//         state: "State",
-//         comment: "Some comments",
-//         guestCapacity: "500-700",
-//         images: [
-//           "https://m.weddingz.in/wedz-img/images/6397e155f137ab22d9b3a78402fa7419/bellamonde-hotel-and-resort-chattarpur-delhi.jpg?imwidth=300",
-//           "ihttps://m.weddingz.in/wedz-img/images/6397e155f137ab22d9b3a78402fa7419/bellamonde-hotel-and-resort-chattarpur-delhi.jpg?imwidth=300",
-//           "https://m.weddingz.in/wedz-img/images/6397e155f137ab22d9b3a78402fa7419/bellamonde-hotel-and-resort-chattarpur-delhi.jpg?imwidth=300",
-          
-//         ],
-//         description: "This venue is conveniently located near the city center, just off the main highway. Visitors can easily reach the venue by car or public transportation.",
-//         about: "Our venue is a modern and spacious facility perfect for weddings, corporate events, and special occasions. With state-of-the-art amenities and flexible event spaces, we can accommodate a wide range of events.",
-//         howToReach: "From the city center, take Main Street southbound and turn right onto Venue Road. Our venue is located on the left-hand side, just past the park.",
-//         venueExpertNotes: "Our expert event planning team is available to assist you every step of the way, from initial booking to event execution. We'll work closely with you to ensure your event is a memorable success.",
-//         featuresOfVenue: "Our venue features include a grand ballroom, outdoor garden terrace, modern audiovisual equipment, complimentary parking, and customizable event packages.",
-//         venuePolicies: "We strive to provide a welcoming and inclusive environment for all guests. Outside catering is allowed with prior approval, and we offer flexible cancellation and rescheduling policies. Please inquire for details.",
-//         summary: "Located in the heart of the city, our venue offers modern amenities, customizable event packages, and expert event planning services to ensure your special occasion is a success.",
-//       };
-//       venues.push(venue);
-//     }
-//     return venues;
-//   };
-
-//   const insertVenuesIntoDB = async () => {
-//     try {
-//       // Generate venue data
-//       const venues = generateVenueData();
-//       // Insert venues into the database
-//       await Venue.insertMany(venues);
-//       console.log("Venues inserted successfully!");
-//     } catch (error) {
-//       console.error("Error inserting venues:", error);
-//     }
-//   };
-
-//   // Call the function to insert venues into the database
-// insertVenuesIntoDB();

@@ -1,76 +1,35 @@
-// import { Vendor } from './models/vendor.js'; // Import the Vendor model
-//  export const prepareDummyData = async () => {
-//   try {
-//     // Dummy data for 10 vendors
-//     const dummyData = Array.from({ length: 10 }, (_, index) => ({
-//       name: `Vendor ${index + 1}`,
-//       email: `vendor${index + 1}@example.com`,
-//       password: 'password123', // You might want to hash passwords in a real scenario
-//       phone: '1234567890',
-//       address: '123 Main Street',
-//       city: 'City',
-//       state: 'State',
-//       businessName: 'Business Name',
-//       type_Of_Business: 'Type of Business',
-//       packages: {
-//         name: 'Package Name',
-//         days: '7',
-//         price: '$1000',
-//         minAdvance: '$200',
-//       },
-//       portfolio: ['Image1.jpg', 'Image2.jpg'],
-//       experience: '10 years',
-//       event_completed: 100,
-//       willingToTravel: true,
-//       usp: 'Unique Selling Proposition',
-//       summary: 'Summary',
-//       bookingPolicy: 'Booking Policy',
-//       cancellationPolicy: 'Cancellation Policy',
-//       termAndConditions: 'Terms and Conditions',
-//     }));
-//     // Insert the dummy data into the database
-//     await Vendor.insertMany(dummyData);
-//     console.log('Dummy data inserted successfully');
-//   } catch (error) {
-//     console.error('Error inserting dummy data:', error);
+//  import axios from 'axios';
+export {};
+// const venues = 
+//   {
+//       yourName: "Owner 1",
+//       businessName: "Venue 1",
+//       email: "owner1@venue.com",
+//       password: "password123",
+//       phone: "1234567890",
+//       address: "Address 1",
+//       city: "City 1",
+//       state: "State 1",
+//       comment: "Some comments",
+//       guestCapacity: "500-700",
+//       images: ["https://example.com/image1.jpg", "https://example.com/image2.jpg", "https://example.com/image3.jpg"],
+//       description: "A beautiful venue located in the heart of the city.",
+//       about: "This venue offers state-of-the-art amenities for various events.",
+//       howToReach: "Take Main Street southbound and turn right onto Venue Road.",
+//       venueExpertNotes: "Our expert event planning team will assist you every step of the way.",
+//       featuresOfVenue: "Grand ballroom, outdoor garden terrace, modern audiovisual equipment.",
+//       venuePolicies: "Flexible cancellation and rescheduling policies.",
+//       summary: "Located in the city center, offering modern amenities and expert planning services.",
+//       venueType: ["Banquet Halls"],
+//       facilities: ["Food provided by venue", "Alcohol allowed", "Outside food allowed", "Music allowed late", "Valet parking", "City view", "Open bar", "AV equipment", "Free WiFi", "Swimming pool", "Spa services", "Ample parking", "Air conditioning", "In-house decor"],
+//       foodPackages: "999"
 //   }
-// };
-//  // Call the function to prepare the dummy data
-import { Vendor } from './models/vendor.js'; // Import the Vendor model
-export const prepareDummyData = async () => {
-    try {
-        // Dummy data for 10 vendors
-        const dummyData = Array.from({ length: 10 }, (_, index) => ({
-            name: `Vendor ${index + 1}`,
-            email: `vendor${index + 1}@example.com`,
-            password: 'password123', // You might want to hash passwords in a real scenario
-            phone: '1234567890',
-            address: '123 Main Street',
-            city: 'City',
-            state: 'State',
-            businessName: 'Business Name',
-            type_Of_Business: 'Type of Business',
-            packages: {
-                name: 'Package Name',
-                days: '7',
-                price: '$1000',
-                minAdvance: '$200',
-            },
-            portfolio: ['Image1.jpg', 'Image2.jpg'],
-            experience: '10 years',
-            event_completed: 100,
-            willingToTravel: true,
-            usp: 'Unique Selling Proposition',
-            summary: 'Summary',
-            bookingPolicy: 'Booking Policy',
-            cancellationPolicy: 'Cancellation Policy',
-            termAndConditions: 'Terms and Conditions',
-        }));
-        // Insert the dummy data into the database
-        await Vendor.insertMany(dummyData);
-        console.log('Dummy data inserted successfully');
-    }
-    catch (error) {
-        console.error('Error inserting dummy data:', error);
-    }
-};
+//   // Add more venues as needed
+// export async function addDemoVenues() {
+//   try {
+//       const response = await axios.post('http://localhost:9000/api/v1/venue/register', venues);
+//       console.log('Demo venues added successfully:', response.data);
+//   } catch (error) {
+//       console.error('Error adding demo venues:', error);
+//   }
+// }

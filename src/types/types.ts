@@ -51,7 +51,9 @@ export interface NewVenueRequestBody{
   venuePolicies?: string;
   summary?: string;
   review?: Types.ObjectId;
-  foodPackages?: Types.ObjectId;
+  venueType?:string[];
+  facilities?:string[];
+  foodPackages?:string
 
 }
 
