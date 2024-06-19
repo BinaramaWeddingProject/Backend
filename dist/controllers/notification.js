@@ -3,77 +3,6 @@ import { asyncHandler } from "../utils/asynHandler.js";
 import { User } from "../models/user.js";
 import NotificationModel from "../models/notification/notification.js";
 import { Venue } from "../models/venue.js";
-// export const postNotification = asyncHandler(
-//   async (req: Request, res: Response, next: NextFunction) => {
-//     try {
-//       const { userId, city, flag } = req.body;
-//       // Fetch all vendors and venues for the given city
-//       let vendorIds: string[] = [];
-//       let venueIds: string[] = [];
-//       if (flag === "vendor") {
-//         const vendors = await Vendor.find({ city });
-//         if (!vendors.length) {
-//           return res.status(404).json({ error: "No vendors found" });
-//         }
-//         vendorIds = vendors.map((vendor) => vendor._id);
-//       } else if (flag === "venue") {
-//         const venues = await Venue.find({ city });
-//         if (!venues.length) {
-//           return res.status(404).json({ error: "No venues found" });
-//         }
-//         venueIds = venues.map((venue) => venue._id);
-//       } else {
-//         return res.status(400).json({ error: "Invalid flag value" });
-//       }
-//       // If userId is available, update the existing notification
-//       if (userId) {
-//         let existingNotification = await NotificationModel.findOne({ userId });
-//         // Check if existingNotification is null
-//         if (!existingNotification) {
-//           return res.status(404).json({ error: "Notification not found" });
-//         }
-//         // Check if existingNotification.vendorIds is undefined
-//         if (existingNotification.vendorIds === undefined) {
-//           existingNotification.vendorIds = [];
-//         }
-//         // Check if the city already exists in the city array
-//         if (!existingNotification.city.includes(city)) {
-//           // If the city doesn't exist, add it to the city array
-//           existingNotification.city.push(city);
-//         }
-//         // Add new vendorIds to the existing ones if they are not already present
-//         vendorIds.forEach((vendorId) => {
-//           if (!existingNotification?.vendorIds?.includes(vendorId)) {
-//             existingNotification!.vendorIds!.push(vendorId);
-//           }
-//         });
-//         // Add new venueIds to the existing ones if they are not already present
-//         venueIds.forEach((venueId) => {
-//           if (!existingNotification?.venueIds?.includes(venueId)) {
-//             existingNotification!.venueIds!.push(venueId);
-//           }
-//         });
-//         // Save the updated notification
-//         existingNotification = await existingNotification.save();
-//         // Send a success response
-//         return res.json({ notification: existingNotification });
-//       }
-//       // If userId is not available, create a new notification
-//       const newNotification = new NotificationModel({
-//         vendorIds,
-//         venueIds,
-//         userId,
-//         city: [city], // Start with an array containing the new city
-//       });
-//       // Save the notification to the database
-//       const savedNotification = await newNotification.save();
-//       // Send a success response
-//       res.status(201).json({ notification: savedNotification });
-//     } catch (error) {
-//       next(error);
-//     }
-//   }
-// );
 export const postNotification = asyncHandler(async (req, res, next) => {
     try {
         const { userId, city, flag } = req.body;
@@ -101,34 +30,51 @@ export const postNotification = asyncHandler(async (req, res, next) => {
         if (!existingNotification) {
             // If notification doesn't exist, create a new one
             existingNotification = new NotificationModel({
-                vendors: flag === "vendor" ? vendorIds.map(vendorId => ({ vendorId, status: "unread" })) : [],
-                venues: flag === "venue" ? venueIds.map(venueId => ({ venueId, status: "unread" })) : [],
+                vendors: flag === "vendor" ? vendorIds.map((vendorId) => ({ vendorId, status: "unread" })) : [],
+                venues: flag === "venue" ? venueIds.map((venueId) => ({ venueId, status: "unread" })) : [],
                 userId,
                 city: [city],
             });
         }
         else {
-            // Check if the city already exists in the city array
+            // Add the new city to the existing notification if it doesn't already exist
             if (!existingNotification.city.includes(city)) {
                 existingNotification.city.push(city);
+                // Add vendors or venues according to the flag and available city
+                if (flag === "vendor") {
+                    vendorIds.forEach((vendorId) => {
+                        if (!existingNotification?.vendors?.some((vendor) => vendor.vendorId === String(vendorId))) {
+                            existingNotification.vendors.push({ vendorId, status: "unread" });
+                        }
+                    });
+                }
+                else if (flag === "venue") {
+                    venueIds.forEach((venueId) => {
+                        if (!existingNotification?.venues?.some((venue) => String(venue.venueId) === String(venueId))) {
+                            existingNotification.venues.push({ venueId, status: "unread" });
+                        }
+                    });
+                }
             }
-            // Add new vendors to the existing ones if they are not already present
-            if (flag === "vendor") {
-                vendorIds.forEach((vendorId) => {
-                    if (!existingNotification?.vendors?.some(vendor => vendor.vendorId === vendorId)) {
-                        existingNotification?.vendors?.push({ vendorId, status: "unread" });
-                    }
-                });
-            }
-            // Add new venueIds to the existing ones if they are not already present
-            if (flag === "venue") {
-                venueIds.forEach((venueId) => {
-                    console.log("loadking", existingNotification?.venues?.some(venues => venues.venueId === venueId));
-                    if (!existingNotification?.venues?.some(venues => venues.venueId === venueId)) {
-                        // console.log("hello");
-                        existingNotification.venues.push({ venueId, status: "unread" });
-                    }
-                });
+            // Check if all vendors/venues are available for existing cities
+            const existingCities = existingNotification.city;
+            for (const existingCity of existingCities) {
+                if (flag === "vendor") {
+                    const vendorsForCity = await Vendor.find({ city: existingCity });
+                    vendorsForCity.forEach((vendor) => {
+                        if (!existingNotification?.vendors?.some((v) => String(v.vendorId) === String(vendor._id))) {
+                            existingNotification.vendors.push({ vendorId: vendor._id, status: "unread" });
+                        }
+                    });
+                }
+                else if (flag === "venue") {
+                    const venuesForCity = await Venue.find({ city: existingCity });
+                    venuesForCity.forEach((venue) => {
+                        if (!existingNotification?.venues?.some((v) => String(v.venueId) === String(venue._id))) {
+                            existingNotification.venues.push({ venueId: venue._id, status: "unread" });
+                        }
+                    });
+                }
             }
         }
         // Save the notification to the database
@@ -142,23 +88,27 @@ export const postNotification = asyncHandler(async (req, res, next) => {
 });
 export const getNotification = asyncHandler(async (req, res, next) => {
     try {
-        const { vendorId } = req.params;
-        console.log("vendor id", vendorId);
+        const { vId } = req.params;
+        console.log("vendor id", vId);
         // Find notifications related to vendors
         const vendorNotifications = await NotificationModel.find({
-            vendorIds: { $in: vendorId },
+            "vendors.vendorId": vId,
         });
-        const vendorUserIds = vendorNotifications.map((notification) => notification.userId);
         // Find notifications related to venues
         const venueNotifications = await NotificationModel.find({
-            venueIds: { $in: vendorId },
+            "venues.venueId": vId,
         });
-        const venueUserIds = venueNotifications.map((notification) => notification.userId);
-        // Merge user IDs from both vendor and venue notifications
-        const userIds = [...vendorUserIds, ...venueUserIds];
-        // Fetch users based on the merged user IDs
-        const users = await User.find({ _id: { $in: userIds } });
-        res.json({ users });
+        // Combine vendor and venue notifications
+        const notifications = [...vendorNotifications, ...venueNotifications];
+        // Fetch users based on the notifications
+        const users = await Promise.all(notifications.map(notification => User.findById(notification.userId)));
+        // Create an array of objects containing user details and associated notification ID
+        const usersWithNotification = users.map((user, index) => ({
+            user,
+            notificationId: notifications[index]._id
+        }));
+        // Return the array of users with their associated notification IDs
+        res.json({ users: usersWithNotification });
     }
     catch (error) {
         next(error);
@@ -166,32 +116,98 @@ export const getNotification = asyncHandler(async (req, res, next) => {
 });
 export const updateNotification = asyncHandler(async (req, res, next) => {
     try {
-        const { id } = req.params;
-        const { status } = req.body;
-        let notification = await NotificationModel.findById(id);
+        // const { nId } = req.params;
+        const { vId, nId } = req.body;
+        let notification = await NotificationModel.findById(nId);
         if (!notification) {
             return next("Notification not found");
         }
         else {
             console.log("Notification Title:", notification.status);
-            notification.status = "read";
-            await notification.save(); // Save the updated notification status to MongoDB
+            // Find the vendor with the specified vendorId
+            const vendorToUpdate = notification?.vendors?.find((vendor) => vendor.vendorId === vId);
+            const venueToUpdate = notification?.venues?.find((venue) => venue.venueId === vId);
+            console.log("VendorToUpdate:", vendorToUpdate);
+            if (vendorToUpdate) {
+                // Update the status of the found vendor
+                vendorToUpdate.status = "read";
+                const updatedNotification = await notification.save(); // Save the updated notification to MongoDB
+                console.log("updatedNotification", updatedNotification);
+                res.status(200).json({
+                    success: true,
+                    status: updatedNotification, // Return the updated status in the response
+                });
+            }
+            else if (venueToUpdate) {
+                // Update the status of the found venue
+                venueToUpdate.status = "read";
+                const updatedNotification = await notification.save(); // Save the updated notification to MongoDB
+                console.log("updatedNotification", updatedNotification);
+                res.status(200).json({
+                    success: true,
+                    status: updatedNotification, // Return the updated status in the response
+                });
+            }
+            else {
+                return next("Vendor not found in the notification");
+            }
         }
-        res.status(200).json({
-            success: true,
-            status: notification.status // Return the updated status in the response
-        });
     }
     catch (error) {
         next(error);
     }
 });
-export const getAllNotification = asyncHandler(async (req, res, next) => {
+export const getNotificationByIdStatus = asyncHandler(async (req, res, next) => {
     try {
-        const notifications = await NotificationModel.find();
+        const { nId } = req.params;
+        // const { vId } = req.body; // Extract vId from request body
+        const vId = req.query.vId; // Extract vId from query parameters
+        console.log(vId);
+        const notification = await NotificationModel.findById(nId);
+        console.log("hello bete");
+        // Check if the notification exists
+        if (!notification) {
+            return res.status(404).json({ success: false, message: 'Notification not found' });
+        }
+        // Find the status based on the provided vId
+        let status;
+        if (notification.vendors && notification.vendors.some(vendor => vendor.vendorId === vId)) {
+            // Vendor exists, find its status
+            const vendor = notification.vendors.find(vendor => vendor.vendorId === vId);
+            status = vendor?.status;
+        }
+        else if (notification.venues && notification.venues.some(venue => venue.venueId === vId)) {
+            // Venue exists, find its status
+            const venue = notification.venues.find(venue => venue.venueId === vId);
+            status = venue?.status;
+        }
+        else {
+            // Vendor or Venue not found
+            return res.status(404).json({ success: false, message: 'Vendor or Venue not found in the notification' });
+        }
+        // Return the status
+        res.status(200).json({ success: true, status });
+    }
+    catch (error) {
+        next(error);
+    }
+});
+export const getAllNotificationsByVendorId = asyncHandler(async (req, res, next) => {
+    try {
+        const { vId } = req.params;
+        // Find notifications related to vendors
+        const vendorNotifications = await NotificationModel.find({
+            "vendors.vendorId": vId,
+        });
+        // Find notifications related to venues
+        const venueNotifications = await NotificationModel.find({
+            "venues.venueId": vId,
+        });
+        const notifications = [...vendorNotifications, ...venueNotifications];
+        // console.log("notification", vendorNotifications)
         res.status(200).json({
             success: true,
-            notifications,
+            status: notifications, // Return the updated status in the response
         });
     }
     catch (error) {

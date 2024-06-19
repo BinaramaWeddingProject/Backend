@@ -13,9 +13,10 @@ import {
   // updateVendorNotification,
   // updateVenueNotification,
   postNotification,
-  getNotification,
   updateNotification,
-  getAllNotification,
+  getNotification,
+  getNotificationByIdStatus,
+  getAllNotificationsByVendorId
 } from "../controllers/notification.js";
 
 const router = Router();
@@ -44,8 +45,9 @@ const router = Router();
 
 //all vendor
 router.route("/city").post(postNotification);
-router.route("/:vendorId").get(getNotification);
-router.route("/:id").patch(updateNotification);
-router.route("/all/notif").get(getAllNotification)
+router.route("/:vId").get(getNotification);
+router.route("/update").patch(updateNotification);
+router.route("/notif/:nId").get(getNotificationByIdStatus);
+router.route("/notification/:vId").get(getAllNotificationsByVendorId)
 
 export default router;
