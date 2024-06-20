@@ -1,13 +1,12 @@
+// routes.js
 import { Router } from "express";
 import { upload } from "../middlewares/multer.js";
-import multer from 'multer';
 import { DeleteRealWeddingsById, GetRealWeddingsPostById, UpdateRealWeddingsPost, addItemToRealWeddingsPost, getAllRealWeddings } from "../controllers/realweddings.js";
-
 
 const router = Router();
 
 //post
-router.route("/add").post(upload.array('images' , 3),addItemToRealWeddingsPost);
+router.route("/add").post(upload.array('images', 4), addItemToRealWeddingsPost);
 
 //get
 router.route("/:id").get(GetRealWeddingsPostById);
@@ -16,9 +15,9 @@ router.route("/:id").get(GetRealWeddingsPostById);
 router.route("/:id").delete(DeleteRealWeddingsById);
 
 //update
-router.route("/:id").patch(upload.array('images' , 3),UpdateRealWeddingsPost);
+router.route("/:id").patch(upload.array('images', 4), UpdateRealWeddingsPost);
 
 //getAll
 router.route("/all/realweddings").get(getAllRealWeddings);
 
-export default router
+export default router;

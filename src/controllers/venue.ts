@@ -84,7 +84,7 @@ export const Login = asyncHandler(async (req: Request, res: Response) => {
 
 
 
-  //Get Vendor By ID
+  //Get Venue By ID
 export const GetVenueById = asyncHandler(async(req: Request, res: Response) => {
     const { id } = req.params; 
    
@@ -203,4 +203,24 @@ export const searchvenuesByCity = async (req: Request, res: Response) => {
       return res.status(500).json({ message: "Internal server error" });
     }
   };
-//
+
+
+
+  // //Get Ranked venues
+  // export const topVenues = asyncHandler(async (req: Request, res: Response) => {
+  //   // Inside this function, we assume Venue is a Mongoose model
+  //   const venues = await Venue.find({rank:{1:5}});
+    
+  //   // Return a JSON response with a custom API response format
+  //   return res.status(200).json(new ApiResponse(200, { venues }, "Here are the Vendors by rank"));
+  // });
+  
+
+// Assuming Venue is a Mongoose model and asyncHandler is used for error handling
+export const topVenues = asyncHandler(async (req: Request, res: Response) => {
+  // Query to find venues where rank is between 1 and 5
+  const venues = await Venue.find({ rank: { $gte: 1, $lte: 2 } });
+
+  // Return a JSON response with a custom API response format
+  return res.status(200).json(new ApiResponse(200, { venues }, "Here are the Vendors by rank"));
+});

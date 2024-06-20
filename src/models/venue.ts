@@ -23,6 +23,7 @@ export interface IVenue extends Document {
   venueExpertNotes?: string;
   featuresOfVenue?: string;
   isVerified?: 'Approved' | 'Rejected' | 'Pending';
+  rank?: number;
   venuePolicies?: string;
   summary?: string;
   review?: Types.ObjectId;
@@ -67,6 +68,10 @@ const VenueSchema = new Schema<IVenue>(
     city: {
       type: String,
       required: [true, "Please provide your city"],
+    },
+    rank: {
+      type: Number,
+      default: 0,
     },
     state: {
       type: String,
@@ -115,8 +120,8 @@ const VenueSchema = new Schema<IVenue>(
       ref: "Review",
     },
     foodPackages: {
-      type: Types.ObjectId,
-      ref: "FoodPackage",
+      type: String,
+      // ref: "FoodPackage",
     },
   },
   {

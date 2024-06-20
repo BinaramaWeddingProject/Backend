@@ -246,3 +246,11 @@ export const GetVendorByType = asyncHandler(async (req: Request, res: Response) 
   // Return the found vendors
   return res.status(200).json(new ApiResponse(200, { vendors }, "Here are the Vendors by type"));
 });
+
+//top rankers
+// export const topVendors = asyncHandler(async (req: Request, res: Response) => {
+
+//   const vendors = await Vendor.find();
+//   return res.status(200).json(new ApiResponse(200, { vendors }, "Here are the Vendors by rank"));
+
+// });

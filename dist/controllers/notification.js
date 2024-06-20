@@ -107,6 +107,7 @@ export const getNotification = asyncHandler(async (req, res, next) => {
             user,
             notificationId: notifications[index]._id
         }));
+        console.log(usersWithNotification);
         // Return the array of users with their associated notification IDs
         res.json({ users: usersWithNotification });
     }
