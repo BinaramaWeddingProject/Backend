@@ -39,6 +39,10 @@ const VenueSchema = new Schema({
         type: String,
         required: [true, "Please provide your city"],
     },
+    rank: {
+        type: Number,
+        default: 0,
+    },
     state: {
         type: String,
         //   required: [true, "Please provide your State"],
@@ -84,8 +88,8 @@ const VenueSchema = new Schema({
         ref: "Review",
     },
     foodPackages: {
-        type: Types.ObjectId,
-        ref: "FoodPackage",
+        type: String,
+        // ref: "FoodPackage",
     },
 }, {
     timestamps: true,
