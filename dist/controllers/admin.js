@@ -35,7 +35,7 @@ export const loginAdmin = asyncHandler(async (req, res) => {
     const isPasswordValid = await admin.profile.isPasswordCorrect(password);
     console.log(isPasswordValid);
     if (!isPasswordValid) {
-        throw new ApiError(401, "Invalid user credentials");
+        throw new ApiError(401, "Invalid admin credentials");
     }
     // Generate access token
     const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET || 'default_secret_key';
@@ -45,7 +45,7 @@ export const loginAdmin = asyncHandler(async (req, res) => {
     // Return response with logged-in vendor details and access token
     return res.status(200)
         .cookie("accesToken", accessToken) //put tokens in cookies
-        .json(new ApiResponse(200, { loggedInAdmin, accessToken }, "Here is the vendor"));
+        .json(new ApiResponse(200, { loggedInAdmin, accessToken }, "Here is the admin"));
 });
 // Function to get all admins
 export const getAllAdmins = async (req, res) => {

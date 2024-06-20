@@ -50,7 +50,7 @@ export const loginAdmin = asyncHandler(async (req: Request, res: Response) => {
 
   console.log(isPasswordValid)
   if (!isPasswordValid) {
-    throw new ApiError(401, "Invalid user credentials");
+    throw new ApiError(401, "Invalid admin credentials");
   }
   // Generate access token
   const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET || 'default_secret_key';
@@ -64,7 +64,7 @@ export const loginAdmin = asyncHandler(async (req: Request, res: Response) => {
   return res.status(200)
     .cookie("accesToken", accessToken,)//put tokens in cookies
     .json(
-      new ApiResponse(200, { loggedInAdmin, accessToken }, "Here is the vendor")
+      new ApiResponse(200, { loggedInAdmin, accessToken }, "Here is the admin")
     );
 });
 

@@ -31,8 +31,8 @@ export const Login = asyncHandler(async (req, res) => {
         throw new ApiError(404, "Email/User doesn't exist!!");
     }
     // // Check password
-    // const isPasswordValid = await vendor.isPasswordCorrect(password);
-    const isPasswordValid = user.password === password;
+    const isPasswordValid = await user.isPasswordCorrect(password);
+    // const  isPasswordValid = user.password === password
     if (!isPasswordValid) {
         throw new ApiError(401, "Invalid user credentials");
     }
