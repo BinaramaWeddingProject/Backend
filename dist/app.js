@@ -1,10 +1,10 @@
-import express from "express";
 import cors from "cors";
 import { config } from "dotenv";
 import connectionDB from "./db/connect.js"; // Adjust the path as needed
 import morgan from "morgan";
 import helmet from "helmet";
 import multer from 'multer';
+import express from "express";
 config({
     path: "./.env",
 });
