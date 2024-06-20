@@ -1,4 +1,4 @@
-import express from "express";
+
 
 import cors from "cors"
 import { config } from "dotenv";
@@ -6,6 +6,7 @@ import connectionDB from "./db/connect.js"; // Adjust the path as needed
 import morgan from "morgan";
 import helmet from "helmet";
 import multer from 'multer';
+import express from "express";
 
 
 
@@ -65,6 +66,7 @@ import wishlistRoutes from './routes/wishlist.js';
 import adminRoutes from './routes/admin.js';
 import blogRoutes from './routes/blog.js';
 import realWeddingsRoutes from './routes/realweddings.js'
+
 
 
 app.use("/api/v1/vendor", vendorRoutes);
