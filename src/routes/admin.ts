@@ -2,6 +2,8 @@
 
 import express from 'express';
 import * as adminController from '../controllers/admin.js';
+import { upload } from '../middlewares/multer.js';
+
 
 const router = express.Router();
 
@@ -18,7 +20,10 @@ router.get('/all', adminController.getAllAdmins);
 router.get('/:id', adminController.getAdminById);
 
 // Route to update admin by ID
-router.put('/:id', adminController.updateAdminProfile);
+ router.route('/:id').patch(upload.array('image', 1), adminController.updateAdminProfile);
+
+
+
 
 // Route to delete admin by ID
 router.delete('/:id', adminController.deleteAdminById);

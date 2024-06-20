@@ -61,6 +61,8 @@ import venueRoutes from "./routes/venue.js"
 import userRoutes from "./routes/user.js"
 import { Venue } from "./models/venue.js";
 import notificationRoutes from "./routes/notification.js"
+// import wishlistRoutes from './routes/wishlist.js';
+
 import wishlistRoutes from './routes/wishlist.js';
 import adminRoutes from './routes/admin.js';
 import blogRoutes from './routes/blog.js';

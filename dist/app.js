@@ -38,6 +38,7 @@ import vendorRoutes from "./routes/vendor.js";
 import venueRoutes from "./routes/venue.js";
 import userRoutes from "./routes/user.js";
 import notificationRoutes from "./routes/notification.js";
+// import wishlistRoutes from './routes/wishlist.js';
 import wishlistRoutes from './routes/wishlist.js';
 import adminRoutes from './routes/admin.js';
 import blogRoutes from './routes/blog.js';
