@@ -70,6 +70,11 @@ const VendorSchema = new Schema({
     willingToTravel: {
         type: Boolean,
     },
+    isVerified: {
+        type: String,
+        enum: ['Approved', 'Rejected', 'Pending'],
+        default: 'Pending',
+    },
     usp: {
         type: String,
     },
