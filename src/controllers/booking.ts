@@ -63,8 +63,6 @@ export const getBookingById = async (req: Request, res: Response) => {
     // Find the booking by vId
     const booking = await Booking.findOne({ vId,uId });
 
-    return
-
     if (!booking) {
       return res.status(404).json({ message: 'Booking not found' });
     }
@@ -75,6 +73,26 @@ export const getBookingById = async (req: Request, res: Response) => {
   }
 };
 
+//sent enquiry status check
+export const getBookingEnquiryStatus = async (req: Request, res: Response) => {
+  try {
+    const vId = req.params.vId;
+    const uId = req.query.uId as string;
+    // Correctly extract vId from request parameters
+
+    // Find the booking by vId
+    const booking = await Booking.findOne({ vId, uId });
+
+    if (!booking) {
+      return res.status(404).json({ message: 'Booking not found' });
+    }
+
+    // Respond with "is True" instead of booking details
+    return res.status(200).json({ message: "True" });
+  } catch (error: any) {
+    return res.status(500).json({ error: error.message });
+  }
+};
 
 // Update a booking by ID
 export const updateBookingVerification = async (req: Request, res: Response) => {

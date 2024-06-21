@@ -86,6 +86,7 @@ export const postNotification = asyncHandler(async (req, res, next) => {
         next(error);
     }
 });
+//get
 export const getNotification = asyncHandler(async (req, res, next) => {
     try {
         const { vId } = req.params;
@@ -115,6 +116,7 @@ export const getNotification = asyncHandler(async (req, res, next) => {
         next(error);
     }
 });
+//update
 export const updateNotification = asyncHandler(async (req, res, next) => {
     try {
         // const { nId } = req.params;
