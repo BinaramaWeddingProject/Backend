@@ -68,6 +68,7 @@ import wishlistRoutes from './routes/wishlist.js';
 import adminRoutes from './routes/admin.js';
 import blogRoutes from './routes/blog.js';
 import realWeddingsRoutes from './routes/realweddings.js'
+import bookingsRoutes from './routes/booking.js'
 
 
 
@@ -79,6 +80,7 @@ app.use("/api/v1/", wishlistRoutes);
 app.use("/api/v1/admin", adminRoutes);
 app.use("/api/v1/blog",blogRoutes);
 app.use("/api/v1/weddingpost", realWeddingsRoutes)
+app.use("/api/v1/bookings", bookingsRoutes)
 
 
 

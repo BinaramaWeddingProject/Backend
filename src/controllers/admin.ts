@@ -7,7 +7,6 @@ import { asyncHandler } from "../utils/asynHandler.js";
 import { Vendor } from '../models/vendor.js';
 import { Venue } from '../models/venue.js';
 import { User } from '../models/user.js';
-import { VenueBooking } from '../models/booking/venuebooking.js';
 import { ApiError } from "../utils/apiError.js";
 import { ApiResponse } from "../utils/apiResponse.js";
 import { uploadOnCloudinary } from "../utils/cloudniary.js";
@@ -259,14 +258,14 @@ export const getAdminById = async (req: Request, res: Response) => {
   };
 
   // Function to get all Bookings
-  export const getAllBookings = async (req: Request, res: Response) => {
-    try {
-      const vendors = await VenueBooking.find();
-      res.status(200).json(vendors);
-    } catch (error: any) {
-      res.status(500).json({ message: error.message });
-    }
-  };
+  // export const getAllBookings = async (req: Request, res: Response) => {
+  //   try {
+  //     const vendors = await VenueBooking.find();
+  //     res.status(200).json(vendors);
+  //   } catch (error: any) {
+  //     res.status(500).json({ message: error.message });
+  //   }
+  // };
 
   // Function to delete vendor by ID
   export const deleteBookingById = async (req: Request, res: Response) => {

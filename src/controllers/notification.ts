@@ -2,15 +2,8 @@ import { Vendor } from "../models/vendor.js";
 // import { VendorNotification } from "../models/VendorNotif.js";
 import { NextFunction, Request, Response } from "express";
 import { asyncHandler } from "../utils/asynHandler.js";
-import { ApiError } from "../utils/apiError.js";
 import { User } from "../models/user.js";
-import VendorNotificationModel from "../models/notification/VendorNotif.js";
-import VenueNotificationModel from "../models/notification/VenueNotif.js";
-import AdminNotificationModel from "../models/notification/AdminNotif.js";
-import UserNotificationModel from "../models/notification/UserNotif.js";
-import NotificationModel, {
-  INotification,
-} from "../models/notification/notification.js";
+import NotificationModel from "../models/notification/notification.js";
 import { Venue } from "../models/venue.js";
 
 
