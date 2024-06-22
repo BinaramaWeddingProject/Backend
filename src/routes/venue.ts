@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { DeleteVenueById, GetVenueById, Login, Register, ShowAllVenues, UpdateVenue, searchvenuesByCity, topVenues } from "../controllers/venue.js";
+import { DeleteVenueById, GetVenueById, Login, Register, ShowAllVenues, UpdateVenue, searchvenuesByCity, topVenues , filterVenues } from "../controllers/venue.js";
 import { upload } from "../middlewares/multer.js";
 
 
@@ -11,9 +11,11 @@ const router = Router();
 router.route("/register").post(Register);
 router.route("/login").post(Login);
 
-
 //get
-router.route("/all").get(ShowAllVenues);
+router.route("/all").get(filterVenues);
+
+// //get
+// router.route("/all").get(ShowAllVenues);
 
 // GET - Retrieve a vendor by ID
 router.get("/:id", GetVenueById);

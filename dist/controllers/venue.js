@@ -104,6 +104,55 @@ export const ShowAllVenues = asyncHandler(async (req, res) => {
     }
     return res.status(200).json(new ApiResponse(200, { venues }, "Here are all vendors."));
 });
+// Function to get all venues with optional filters
+export const filterVenues = async (req, res) => {
+    try {
+        // Extract filter criteria from query parameters
+        const { businessName, city, minGuests, maxGuests, foodPackage, facilities, venueTypes } = req.query;
+        console.log(businessName, city, minGuests, maxGuests, foodPackage, facilities, venueTypes);
+        // Build the filter criteria object
+        const filterCriteria = {};
+        if (city) {
+            filterCriteria.city = city;
+        }
+        if (businessName) {
+            filterCriteria.businessName = businessName;
+        }
+        if (minGuests || maxGuests) {
+            filterCriteria.guestCapacity = {};
+            if (minGuests)
+                filterCriteria.guestCapacity.$gte = Number(minGuests);
+            if (maxGuests)
+                filterCriteria.guestCapacity.$lte = Number(maxGuests);
+        }
+        if (foodPackage) {
+            filterCriteria.foodPackages = foodPackage;
+        }
+        if (facilities) {
+            filterCriteria.facilities = { $all: facilities.split(',') };
+        }
+        if (venueTypes) {
+            filterCriteria.venueType = { $in: venueTypes.split(',') };
+        }
+        // console.log(filterCriteria)
+        // Perform the query
+        const venues = await Venue.find(filterCriteria);
+        //console.log(venues)
+        // Return the filtered venues
+        res.status(200).json({
+            success: true,
+            data: venues
+        });
+    }
+    catch (error) {
+        console.error('Error fetching venues:', error);
+        res.status(500).json({
+            success: false,
+            message: 'An error occurred while fetching venues',
+            error: error.message
+        });
+    }
+};
 // search by the city
 export const searchvenuesByCity = async (req, res) => {
     const { city } = req.params; // Get the city query parameter from the request
