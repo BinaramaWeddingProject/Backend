@@ -16,6 +16,7 @@ export interface IBooking extends Document {
   message?: string;
   bookingId?: string;   
   isVerified?: 'Approved' | 'Rejected' | 'Pending';
+  status?: 'Read' | 'Unread';
 }
 
 // Define the Booking Schema
@@ -31,7 +32,8 @@ const BookingSchema = new Schema<IBooking>({
   message: { type: String, required: true },
   bookingId: { type: String, required: true },
 
-  isVerified: { type: String, enum: ['Approved', 'Rejected', 'Pending'], default: 'Pending' }
+  isVerified: { type: String, enum: ['Approved', 'Rejected', 'Pending'], default: 'Pending' },
+  status:{type:String, enum:['Read', 'Unread'], default:'Unread'}
 }, {
   timestamps: true // Add timestamps to record creation and update times
 });

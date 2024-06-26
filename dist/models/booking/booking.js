@@ -13,7 +13,8 @@ const BookingSchema = new Schema({
     address: { type: String, required: true },
     message: { type: String, required: true },
     bookingId: { type: String, required: true },
-    isVerified: { type: String, enum: ['Approved', 'Rejected', 'Pending'], default: 'Pending' }
+    isVerified: { type: String, enum: ['Approved', 'Rejected', 'Pending'], default: 'Pending' },
+    status: { type: String, enum: ['Read', 'Unread'], default: 'Unread' }
 }, {
     timestamps: true // Add timestamps to record creation and update times
 });
