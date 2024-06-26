@@ -48,11 +48,28 @@ export const getBookingById = async (req, res) => {
         // Correctly extract vId from request parameters
         // Find the booking by vId
         const booking = await Booking.findOne({ vId, uId });
-        return;
         if (!booking) {
             return res.status(404).json({ message: 'Booking not found' });
         }
         return res.status(200).json(booking);
+    }
+    catch (error) {
+        return res.status(500).json({ error: error.message });
+    }
+};
+//sent enquiry status check
+export const getBookingEnquiryStatus = async (req, res) => {
+    try {
+        const vId = req.params.vId;
+        const uId = req.query.uId;
+        // Correctly extract vId from request parameters
+        // Find the booking by vId
+        const booking = await Booking.findOne({ vId, uId });
+        if (!booking) {
+            return res.status(404).json({ message: 'Booking not found' });
+        }
+        // Respond with "is True" instead of booking details
+        return res.status(200).json({ message: "True" });
     }
     catch (error) {
         return res.status(500).json({ error: error.message });

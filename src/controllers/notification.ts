@@ -99,7 +99,7 @@ export const postNotification = asyncHandler(
 
 
 
-
+//get
 export const getNotification = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { vId } = req.params;
@@ -139,7 +139,7 @@ export const getNotification = asyncHandler(async (req: Request, res: Response, 
 
 
 
-
+//update
 export const updateNotification = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
