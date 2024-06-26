@@ -13,6 +13,7 @@ router.route("/login").post(Login);
 
 //get
 router.route("/all").get(filterVenues);
+// router.route("/all").get(ShowAllVenues);
 
 // //get
 // router.route("/all").get(ShowAllVenues);

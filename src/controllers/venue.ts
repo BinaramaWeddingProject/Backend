@@ -176,11 +176,15 @@ export const ShowAllVenues = asyncHandler(async (req: Request, res: Response) =>
 // Function to get all venues with optional filters
 export const filterVenues = async (req: Request, res: Response) => {
   try {
+    console.log("yerooo data", filterVenues)
     // Extract filter criteria from query parameters
     const { businessName ,city, minGuests, maxGuests, foodPackage, facilities, venueTypes } = req.query;
     console.log(businessName , city, minGuests, maxGuests, foodPackage, facilities, venueTypes)
     // Build the filter criteria object
     const filterCriteria: any = {};
+    var venues;
+
+    
 
     if (city) {
       filterCriteria.city = city;
@@ -209,7 +213,18 @@ export const filterVenues = async (req: Request, res: Response) => {
 
    // console.log(filterCriteria)
     // Perform the query
-    const venues = await Venue.find(filterCriteria);
+    
+       
+  //  if(filterCriteria){
+  //    venues = await Venue.find(filterCriteria);
+  //  }
+  //  else{
+  //   venues = await Venue.find();
+  //  }
+  if(!businessName && !city && !minGuests && !maxGuests && !foodPackage && !facilities && !venueTypes){
+  venues = await Venue.find();
+  }
+
     //console.log(venues)
 
     // Return the filtered venues

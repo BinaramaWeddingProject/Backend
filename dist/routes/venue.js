@@ -7,6 +7,7 @@ router.route("/register").post(Register);
 router.route("/login").post(Login);
 //get
 router.route("/all").get(filterVenues);
+// router.route("/all").get(ShowAllVenues);
 // //get
 // router.route("/all").get(ShowAllVenues);
 // GET - Retrieve a vendor by ID
