@@ -103,9 +103,15 @@ export const UpdateUser = asyncHandler(async (req, res) => {
     return res.status(200).json(new ApiResponse(200, "User Updated Successfully!!"));
 });
 //all cities
+// all cities
 export const GetAllCities = asyncHandler(async (req, res) => {
     const p = await Vendor.find();
     const c = await Venue.find();
-    const cities = [...new Set([...p.map(v => v.city), ...c.map(v => v.city)])];
-    return res.status(200).json({ cities });
+    const cities = [...new Set([
+            ...p.map(v => v.city.toLowerCase()),
+            ...c.map(v => v.city.toLowerCase())
+        ])];
+    // Capitalize the first letter of each city for better readability
+    const capitalizedCities = cities.map(city => city.charAt(0).toUpperCase() + city.slice(1));
+    return res.status(200).json({ cities: capitalizedCities });
 });
