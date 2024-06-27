@@ -3,7 +3,9 @@ import { ApiError } from "../utils/apiError.js";
 import { ApiResponse } from "../utils/apiResponse.js";
 import { User } from "../models/user.js";
 import jwt from 'jsonwebtoken';
+import { Vendor } from "../models/vendor.js";
 import { uploadOnCloudinary } from "../utils/cloudniary.js";
+import { Venue } from "../models/venue.js";
 //Register vendor 
 export const Register = asyncHandler(async (req, res, next) => {
     const { fullName, email, password, phone, city } = req.body;
@@ -99,4 +101,11 @@ export const UpdateUser = asyncHandler(async (req, res) => {
     }
     await user.save();
     return res.status(200).json(new ApiResponse(200, "User Updated Successfully!!"));
+});
+//all cities
+export const GetAllCities = asyncHandler(async (req, res) => {
+    const p = await Vendor.find();
+    const c = await Venue.find();
+    const cities = [...new Set([...p.map(v => v.city), ...c.map(v => v.city)])];
+    return res.status(200).json({ cities });
 });
