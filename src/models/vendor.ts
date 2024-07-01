@@ -31,7 +31,7 @@ export interface IVendor extends Document {
   bookingPolicy?: string;
   cancellationPolicy?: string;
   termAndConditions?: string;
-  review?: mongoose.Types.ObjectId;
+  // review?: mongoose.Types.ObjectId;
   isPasswordCorrect(password: string | Buffer): Promise<boolean>;
   generateAccessToken(): string;
   generateRefreshToken(): string;
@@ -98,7 +98,7 @@ const VendorSchema = new Schema<IVendor>(
     },
     portfolio: {
       type: [String],
-      required: false,
+      
     },
     experience: {
       type: String,
@@ -129,10 +129,10 @@ const VendorSchema = new Schema<IVendor>(
     termAndConditions: {
       type: String,
     },
-    review: {
-      type: mongoose.Types.ObjectId,
-      ref: "Review",
-    },
+    // review: {
+    //   type: mongoose.Types.ObjectId,
+    //   ref: "Review",
+    // },
     refreshToken: {
       type: String,
     },

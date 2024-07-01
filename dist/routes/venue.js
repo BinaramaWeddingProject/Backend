@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { DeleteVenueById, GetVenueById, Login, Register, UpdateVenue, searchvenuesByCity, topVenues, filterVenues } from "../controllers/venue.js";
 import { upload } from "../middlewares/multer.js";
+import { checkAdmin } from "../middlewares/Admin.js";
 const router = Router();
 //post
 router.route("/register").post(Register);
@@ -17,7 +18,7 @@ router.route("/:id").put(upload.array('image', 20), UpdateVenue);
 // GET - Search vendors by city
 router.get("search_venues/:city", searchvenuesByCity);
 //delete
-router.route("/:id").delete(DeleteVenueById);
+router.route("/:id").delete(checkAdmin, DeleteVenueById);
 //ranked venues
 router.route("/ranked/venues").get(topVenues);
 export default router;

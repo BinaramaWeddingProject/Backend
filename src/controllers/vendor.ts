@@ -123,7 +123,7 @@ export const UpdateVendor = asyncHandler(async (req: Request, res: Response) => 
 
   const updateFields: Partial<IVendor> = req.body;
   const givenFiles = req.files as Express.Multer.File[];
- console.log("multer" , givenFiles)
+ 
   const vendor = await Vendor.findById(id);
 
   if (!vendor) {

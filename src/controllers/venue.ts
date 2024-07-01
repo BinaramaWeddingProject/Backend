@@ -135,6 +135,8 @@ export const UpdateVenue = asyncHandler(async (req: Request, res: Response) => {
 //Delete venue bY ID
 export const DeleteVenueById = asyncHandler(async (req: Request, res: Response) => {
   const { id } = req.params;
+  const {user} = req.body
+  console.log("useers " , user)
 
   const venue = await Venue.findById(id);
 

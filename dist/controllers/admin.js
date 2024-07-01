@@ -43,7 +43,12 @@ export const loginAdmin = asyncHandler(async (req, res) => {
     const loggedInAdmin = await AdminModel.findById(admin._id).select("-password");
     // Return response with logged-in vendor details and access token
     return res.status(200)
-        .cookie("accesToken", accessToken) //put tokens in cookies
+        .cookie("accessToken", accessToken, {
+        httpOnly: true, // Prevents client-side JavaScript from accessing the cookie
+        secure: process.env.NODE_ENV === 'production', // Ensures the cookie is sent only over HTTPS in production
+        sameSite: 'strict', // Ensures the cookie is sent only to the same site
+        maxAge: 3600000 // 1 hour in milliseconds
+    })
         .json(new ApiResponse(200, { loggedInAdmin, accessToken }, "Here is the admin"));
 });
 // Function to get all admins

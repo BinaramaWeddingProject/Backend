@@ -59,7 +59,6 @@ const VendorSchema = new Schema({
     },
     portfolio: {
         type: [String],
-        required: false,
     },
     experience: {
         type: String,
@@ -90,10 +89,10 @@ const VendorSchema = new Schema({
     termAndConditions: {
         type: String,
     },
-    review: {
-        type: mongoose.Types.ObjectId,
-        ref: "Review",
-    },
+    // review: {
+    //   type: mongoose.Types.ObjectId,
+    //   ref: "Review",
+    // },
     refreshToken: {
         type: String,
     },

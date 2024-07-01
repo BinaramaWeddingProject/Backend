@@ -80,6 +80,8 @@ export const UpdateVenue = asyncHandler(async (req, res) => {
 //Delete venue bY ID
 export const DeleteVenueById = asyncHandler(async (req, res) => {
     const { id } = req.params;
+    const { user } = req.body;
+    console.log("useers ", user);
     const venue = await Venue.findById(id);
     if (!venue) {
         throw new ApiError(404, "No Vendor Found!!!");

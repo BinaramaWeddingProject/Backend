@@ -77,7 +77,6 @@ export const UpdateVendor = asyncHandler(async (req, res) => {
     const { id } = req.params;
     const updateFields = req.body;
     const givenFiles = req.files;
-    console.log("multer", givenFiles);
     const vendor = await Vendor.findById(id);
     if (!vendor) {
         throw new ApiError(404, "No Vendor Found!!!");
