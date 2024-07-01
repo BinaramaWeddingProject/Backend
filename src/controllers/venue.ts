@@ -290,5 +290,5 @@ export const topVenues = asyncHandler(async (req: Request, res: Response) => {
   const venues = await Venue.find({ rank: { $gte: 1, $lte: 2 } });
 
   // Return a JSON response with a custom API response format
-  return res.status(200).json(new ApiResponse(200, { venues }, "Here are the Vendors by rank"));
+  return res.status(200).json(new ApiResponse(200,  venues , "Here are the Vendors by rank"));
 });
