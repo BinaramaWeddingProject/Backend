@@ -100,20 +100,32 @@ export const GetVenueById = asyncHandler(async (req: Request, res: Response) => 
 export const UpdateVenue = asyncHandler(async (req: Request, res: Response) => {
   const { id } = req.params;
 
+  // const venueData = JSON.parse(req.body.venueData);
+    
+    // if (req.files && Array.isArray(req.files)) {
+      
+    //   venueData.images = (req.files as Express.Multer.File[]).map(file => `/uploads/${file.filename}`);
+    //   console.log("venueimage" ,venueData.images );
+    // }
+    // console.log("venuedata" , venueData);
+   
+
   const updateFields: Partial<IVenue> = req.body;
+  console.log("data" , updateFields)
  
 
   const givenFiles = req.files as Express.Multer.File[];
-  console.log(givenFiles)
-
+  
   const venue = await Venue.findById(id);
 
   if (!venue) {
     throw new ApiError(404, "No Venue Found!!!");
   }
+ // console.log("fff" , givenFiles)
+
 
   if (givenFiles?.length > 0) {
-    console.log(givenFiles);
+   // console.log("inside", givenFiles);
     const imageUrls = await uploadOnCloudinary(givenFiles);
     if (imageUrls) venue.images = imageUrls;
   }
