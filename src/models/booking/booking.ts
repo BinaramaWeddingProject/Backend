@@ -14,6 +14,7 @@ export interface IBooking extends Document {
   date?: Date;
   address?: string;
   message?: string;
+  typeOfEvent: string;
   bookingId?: string;   
   isVerified?: 'Approved' | 'Rejected' | 'Pending';
   status?: 'Read' | 'Unread';
@@ -30,6 +31,7 @@ const BookingSchema = new Schema<IBooking>({
   date: { type: Date, required: true },
   address: { type: String, required: true },
   message: { type: String, required: true },
+  typeOfEvent: { type: String, required: true },
   bookingId: { type: String, required: true },
 
   isVerified: { type: String, enum: ['Approved', 'Rejected', 'Pending'], default: 'Pending' },
