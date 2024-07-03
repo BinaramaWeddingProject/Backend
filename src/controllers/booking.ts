@@ -52,11 +52,11 @@ export const getAllBookings = async (req: Request, res: Response) => {
 export const getBookingById = async (req: Request, res: Response) => {
   try {
     const vId = req.params.vId;
-    const {bookingId,uId} = req.body
+    // const {bookingId,uId} = req.body
      // Correctly extract vId from request parameters
 
     // Find the booking by vId
-    const booking = await Booking.findOne({ vId,uId });
+    const booking = await Booking.find({ vId });
 
     if (!booking) {
       return res.status(404).json({ message: 'Booking not found' });
@@ -148,3 +148,5 @@ export const deleteBooking = async (req: Request, res: Response) => {
     return res.status(500).json({ error: error.message });
   }
 };
+
+
