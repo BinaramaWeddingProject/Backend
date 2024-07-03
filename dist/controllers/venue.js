@@ -53,59 +53,36 @@ export const GetVenueById = asyncHandler(async (req, res) => {
     return res.status(200).json(new ApiResponse(200, { venue }, "Here is the Vendor"));
 });
 //update Venue
-// export const UpdateVenue = asyncHandler(async (req: Request, res: Response) => {
-//   const { id } = req.params;
-//   const updateFields: Partial<IVenue> = req.body;
-//   const givenFiles = req.files as Express.Multer.File[];
-//   const venue = await Venue.findById(id);
-//   if (!venue) {
-//     throw new ApiError(404, "No Venue Found!!!");
-//   }
-//   if (givenFiles?.length > 0) {
-//     console.log(givenFiles);
-//     const imageUrls = await uploadOnCloudinary(givenFiles);
-//     if (imageUrls) venue.images = imageUrls;
-//   }
-//   // Update all fields present in req.body
-//   for (const [key, value] of Object.entries(updateFields)) {
-//     if (key !== '_id' && key !== '__v') {
-//       (venue as any)[key] = value;
-//     }
-//   }
-//  // console.log(venue)
-//   await venue.save();
-//   return res.status(200).json(new ApiResponse(200, "Venue Updated Successfully!!"));
-// });
 export const UpdateVenue = asyncHandler(async (req, res) => {
     const { id } = req.params;
+    // const venueData = JSON.parse(req.body.venueData);
+    // if (req.files && Array.isArray(req.files)) {
+    //   venueData.images = (req.files as Express.Multer.File[]).map(file => `/uploads/${file.filename}`);
+    //   console.log("venueimage" ,venueData.images );
+    // }
+    // console.log("venuedata" , venueData);
     const updateFields = req.body;
+    console.log("data", updateFields);
     const givenFiles = req.files;
-    console.log(givenFiles);
-    // Find the venue by ID
     const venue = await Venue.findById(id);
     if (!venue) {
         throw new ApiError(404, "No Venue Found!!!");
     }
-    // Handle file uploads if files are provided
-    if (givenFiles.length > 0) {
-        try {
-            const imageUrls = await uploadOnCloudinary(givenFiles);
-            venue.images = imageUrls; // Update venue images with Cloudinary URLs
-        }
-        catch (error) {
-            throw new ApiError(500, "Failed to upload images to Cloudinary");
-            // Rollback changes if necessary
-        }
+    // console.log("fff" , givenFiles)
+    if (givenFiles?.length > 0) {
+        // console.log("inside", givenFiles);
+        const imageUrls = await uploadOnCloudinary(givenFiles);
+        if (imageUrls)
+            venue.images = imageUrls;
     }
-    // Update other fields from req.body
+    // Update all fields present in req.body
     for (const [key, value] of Object.entries(updateFields)) {
         if (key !== '_id' && key !== '__v') {
-            venue[key] = value; // Assign each field to the venue object
+            venue[key] = value;
         }
     }
-    // Save updated venue to database
+    // console.log(venue)
     await venue.save();
-    // Respond with success message
     return res.status(200).json(new ApiResponse(200, "Venue Updated Successfully!!"));
 });
 //Delete venue bY ID
