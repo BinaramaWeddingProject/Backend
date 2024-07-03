@@ -11,3 +11,4 @@ router.patch('/:vId', updateBookingVerification);
 router.delete('/:id', deleteBooking);
 
 export default router;
+    

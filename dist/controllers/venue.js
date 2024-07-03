@@ -53,28 +53,58 @@ export const GetVenueById = asyncHandler(async (req, res) => {
     return res.status(200).json(new ApiResponse(200, { venue }, "Here is the Vendor"));
 });
 //update Venue
+// export const UpdateVenue = asyncHandler(async (req: Request, res: Response) => {
+//   const { id } = req.params;
+//   const updateFields: Partial<IVenue> = req.body;
+//   const givenFiles = req.files as Express.Multer.File[];
+//   const venue = await Venue.findById(id);
+//   if (!venue) {
+//     throw new ApiError(404, "No Venue Found!!!");
+//   }
+//   if (givenFiles?.length > 0) {
+//     console.log(givenFiles);
+//     const imageUrls = await uploadOnCloudinary(givenFiles);
+//     if (imageUrls) venue.images = imageUrls;
+//   }
+//   // Update all fields present in req.body
+//   for (const [key, value] of Object.entries(updateFields)) {
+//     if (key !== '_id' && key !== '__v') {
+//       (venue as any)[key] = value;
+//     }
+//   }
+//  // console.log(venue)
+//   await venue.save();
+//   return res.status(200).json(new ApiResponse(200, "Venue Updated Successfully!!"));
+// });
 export const UpdateVenue = asyncHandler(async (req, res) => {
     const { id } = req.params;
     const updateFields = req.body;
     const givenFiles = req.files;
+    // Find the venue by ID
     const venue = await Venue.findById(id);
     if (!venue) {
         throw new ApiError(404, "No Venue Found!!!");
     }
-    if (givenFiles?.length > 0) {
-        console.log(givenFiles);
-        const imageUrls = await uploadOnCloudinary(givenFiles);
-        if (imageUrls)
-            venue.images = imageUrls;
-    }
-    // Update all fields present in req.body
-    for (const [key, value] of Object.entries(updateFields)) {
-        if (key !== '_id' && key !== '__v') {
-            venue[key] = value;
+    // Handle file uploads if files are provided
+    if (givenFiles.length > 0) {
+        try {
+            const imageUrls = await uploadOnCloudinary(givenFiles);
+            venue.images = imageUrls; // Update venue images with Cloudinary URLs
+        }
+        catch (error) {
+            throw new ApiError(500, "Failed to upload images to Cloudinary");
+            // Rollback changes if necessary
         }
     }
-    // console.log(venue)
+    // Update other fields from req.body
+    for (const [key, value] of Object.entries(updateFields)) {
+        if (key !== '_id' && key !== '__v') {
+            venue[key] = value; // Assign each field to the venue object
+        }
+    }
+    // Save updated venue to database
     await venue.save();
+    // Respond with success message
     return res.status(200).json(new ApiResponse(200, "Venue Updated Successfully!!"));
 });
 //Delete venue bY ID
@@ -198,5 +228,5 @@ export const topVenues = asyncHandler(async (req, res) => {
     // Query to find venues where rank is between 1 and 5
     const venues = await Venue.find({ rank: { $gte: 1, $lte: 2 } });
     // Return a JSON response with a custom API response format
-    return res.status(200).json(new ApiResponse(200, { venues }, "Here are the Vendors by rank"));
+    return res.status(200).json(new ApiResponse(200, venues, "Here are the Vendors by rank"));
 });

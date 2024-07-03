@@ -3,20 +3,16 @@ import { Booking } from '../models/booking/booking.js';
 
 export const createBooking = async (req: Request, res: Response) => {
   try {
-    const { vId, uId, name, contact, location, guests, date, address, message } = req.body;
+    const { vId, uId, name, contact, location, guests, date, address, message, typeOfEvent } = req.body;
 
-    // Check if there is already a booking with the same uId and vId
     const existingBooking = await Booking.findOne({ uId, vId });
 
     if (existingBooking) {
-      // Return a response indicating that a booking already exists for this uId and vId
       return res.status(400).json({ error: 'Booking already exists for this uId and vId' });
     }
 
-    // Generate a unique ID for the booking
     const uniqueId = Math.floor(100000 + Math.random() * 900000);
 
-    // Construct the new booking object
     const newBooking = new Booking({
       vId,
       uId,
@@ -27,10 +23,10 @@ export const createBooking = async (req: Request, res: Response) => {
       date,
       address,
       message,
+      typeOfEvent,  // New field added
       bookingId: uniqueId
     });
 
-    // Save the new booking
     const savedBooking = await newBooking.save();
 
     return res.status(201).json(savedBooking);
@@ -38,7 +34,6 @@ export const createBooking = async (req: Request, res: Response) => {
     return res.status(500).json({ error: error.message });
   }
 };
-
 
 
 
