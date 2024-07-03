@@ -46,15 +46,13 @@ export const Login = asyncHandler(async (req: Request, res: Response) => {
   }
 
   // Finding vendor from database using email
-  const venue:any = await Venue.findOne({ email });
+  const venue = await Venue.findOne({ email });
 
   if (!venue) {
     throw new ApiError(404, "Email/User doesn't exist!!");
   }
- 
 
   // Check password
-
   const isPasswordValid = await venue.isPasswordCorrect(password);
 
   // const isPasswordValid = venue.password === password
@@ -105,28 +103,20 @@ export const UpdateVenue = asyncHandler(async (req: Request, res: Response) => {
   const updateFields: Partial<IVenue> = req.body;
  
 
-  // const givenFiles = req.files as Express.Multer.File[];
-  // console.log("aslnfakldf" , givenFiles)
+  const givenFiles = req.files as Express.Multer.File[];
+  console.log(givenFiles)
 
-  const venue:any = await Venue.findById(id);
+  const venue = await Venue.findById(id);
 
   if (!venue) {
     throw new ApiError(404, "No Venue Found!!!");
   }
- const i = req.files
- console.log("i" , i)
-    // Handle file uploads
-    if (req.files && Array.isArray(req.files)) {
-      venue.images = (req.files as Express.Multer.File[]).map(file => `/temp/${file.filename}`);
-    }
 
-  // if (givenFiles?.length > 0) {
-  //   console.log(givenFiles);
-  //   const imageUrls = await uploadOnCloudinary(givenFiles);
-  //   if (imageUrls) venue.images = imageUrls;
-  //   console.log(imageUrls)
-  // }
-
+  if (givenFiles?.length > 0) {
+    console.log(givenFiles);
+    const imageUrls = await uploadOnCloudinary(givenFiles);
+    if (imageUrls) venue.images = imageUrls;
+  }
 
   // Update all fields present in req.body
   for (const [key, value] of Object.entries(updateFields)) {

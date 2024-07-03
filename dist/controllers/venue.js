@@ -1,6 +1,7 @@
 import { asyncHandler } from "../utils/asynHandler.js";
 import { ApiError } from "../utils/apiError.js";
 import { ApiResponse } from "../utils/apiResponse.js";
+import { uploadOnCloudinary } from "../utils/cloudniary.js";
 import { Venue } from "../models/venue.js";
 import jwt from 'jsonwebtoken';
 //Register Venu
@@ -55,24 +56,18 @@ export const GetVenueById = asyncHandler(async (req, res) => {
 export const UpdateVenue = asyncHandler(async (req, res) => {
     const { id } = req.params;
     const updateFields = req.body;
-    // const givenFiles = req.files as Express.Multer.File[];
-    // console.log("aslnfakldf" , givenFiles)
+    const givenFiles = req.files;
+    console.log(givenFiles);
     const venue = await Venue.findById(id);
     if (!venue) {
         throw new ApiError(404, "No Venue Found!!!");
     }
-    const i = req.files;
-    console.log("i", i);
-    // Handle file uploads
-    if (req.files && Array.isArray(req.files)) {
-        venue.images = req.files.map(file => `/temp/${file.filename}`);
+    if (givenFiles?.length > 0) {
+        console.log(givenFiles);
+        const imageUrls = await uploadOnCloudinary(givenFiles);
+        if (imageUrls)
+            venue.images = imageUrls;
     }
-    // if (givenFiles?.length > 0) {
-    //   console.log(givenFiles);
-    //   const imageUrls = await uploadOnCloudinary(givenFiles);
-    //   if (imageUrls) venue.images = imageUrls;
-    //   console.log(imageUrls)
-    // }
     // Update all fields present in req.body
     for (const [key, value] of Object.entries(updateFields)) {
         if (key !== '_id' && key !== '__v') {
