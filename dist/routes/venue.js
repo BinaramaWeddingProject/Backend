@@ -14,7 +14,7 @@ router.route("/all").get(filterVenues);
 // GET - Retrieve a vendor by ID
 router.get("/:id", GetVenueById);
 //PUT - Update venue data
-router.route("/:id").put(upload.array('image', 20), UpdateVenue);
+router.route("/:id").put(upload.array('images', 20), UpdateVenue);
 // GET - Search vendors by city
 router.get("search_venues/:city", searchvenuesByCity);
 //delete

@@ -52,10 +52,10 @@ export const Login = asyncHandler(async (req: Request, res: Response) => {
     throw new ApiError(404, "Email/User doesn't exist!!");
   }
 
-  // // Check password
-  // const isPasswordValid = await vendor.isPasswordCorrect(password);
+  // Check password
+  const isPasswordValid = await venue.isPasswordCorrect(password);
 
-  const isPasswordValid = venue.password === password
+  // const isPasswordValid = venue.password === password
 
   if (!isPasswordValid) {
     throw new ApiError(401, "Invalid venue credentials");
@@ -135,6 +135,7 @@ export const UpdateVenue = asyncHandler(async (req: Request, res: Response) => {
   const { id } = req.params;
   const updateFields: Partial<IVenue> = req.body;
   const givenFiles = req.files as Express.Multer.File[];
+  console.log(givenFiles)
 
   // Find the venue by ID
   const venue = await Venue.findById(id);
