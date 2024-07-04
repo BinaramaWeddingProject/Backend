@@ -27,6 +27,8 @@ app.use(cors({
     credentials: true
 }));
 
+console.log('CORS Origin:', process.env.CORS_ORIGIN);
+
 
 
 // Call the connectionDB function to establish MongoDB connection
