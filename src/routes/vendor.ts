@@ -11,7 +11,7 @@ router.route("/register").post(Register);
 router.route("/login").post(Login);
 
 //put
-router.route("/:id").put(upload.array('image' , 20),UpdateVendor);
+router.route("/:id").put(upload.array('portfolio' , 20),UpdateVendor);
 
 //get
 router.route("/all").get(ShowAllVendors);
