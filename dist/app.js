@@ -42,6 +42,7 @@ import notificationRoutes from "./routes/notification.js";
 import wishlistRoutes from './routes/wishlist.js';
 import adminRoutes from './routes/admin.js';
 import blogRoutes from './routes/blog.js';
+import enquiryRoutes from './routes/enquiry.js';
 // import { addDemoVenues } from "./dummy.js";
 app.use("/api/v1/vendor", vendorRoutes);
 app.use("/api/v1/venue", venueRoutes);
@@ -50,6 +51,7 @@ app.use("/api/v1/notificaiton", notificationRoutes);
 app.use("/api/v1/", wishlistRoutes);
 app.use("/api/v1/admin", adminRoutes);
 app.use("/api/v1/blog", blogRoutes);
+app.use("/api/v1/enquiry", enquiryRoutes);
 // addDemoVenues();
 // export const prepareDummyData = async () => {
 //   try {
