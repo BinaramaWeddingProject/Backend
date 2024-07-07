@@ -4,8 +4,8 @@ export interface IEnquiry {
     name: string;
     contact: string;
     location: string;
-    guests: number;
-    date: Date;
+    guests: string;
+    date: string;
     address: string;
     message?: string;
     typeOfEvent: string;
@@ -25,11 +25,11 @@ const enquirySchema = new mongoose.Schema({
       required: true,
     },
     guests: {
-      type: Number,
+      type: String,
       
     },
     date: {
-      type: Date,
+      type: String,
       
     },
     address: {
@@ -44,7 +44,6 @@ const enquirySchema = new mongoose.Schema({
       type: String,
       
     },
-
 
 
   });

@@ -3,6 +3,7 @@ import { Enquiry } from '../models/enquiry.js';
 
 export const submitEnquiryForm = async (req: Request, res: Response): Promise<void> => {
   try {
+    console.log("rew", req.body)
     const newEnquiry= new Enquiry(req.body);
     console.log("xasx" , newEnquiry)
     await newEnquiry.save();
