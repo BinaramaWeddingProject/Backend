@@ -94,7 +94,9 @@ export const getBookingEnquiryStatus = async (req: Request, res: Response) => {
 export const updateBookingVerification = async (req: Request, res: Response) => {
   try {
     const vId = req.params.vId; // Correctly extract venueId from request parameters
-    const { uId, bookingId } = req.body;
+    // const  uId = req.query.uId as string;
+    // const  bookingId = req.query.bookingId as string;
+    const {uId , bookingId} = req.body;
     console.log("pathc req log",vId,uId,bookingId)
 
     // Find the booking by matching vId with vId
@@ -106,20 +108,24 @@ export const updateBookingVerification = async (req: Request, res: Response) => 
     }
 
     if(booking.bookingId==bookingId){
-      
+      console.log("book" , booking.bookingId)
       booking.isVerified="Approved";
       
-      console.log("status kya h",booking.isVerified)
+      console.log("status kya h",booking)
 
       const updateBooking = await booking.save();
+      console.log("aap" ,updateBooking)
       
       
       return res.status(200).json(updateBooking.isVerified);
 
     }
-    else if(bookingId==="Rejected"){
+    else if(bookingId=="Rejected"){
+      console.log("rejected",bookingId)
       booking.isVerified="Rejected"
-      return res.status(500).json("The request has been rejected")
+      const updateBooking = await booking.save();
+
+      return res.status(500).json(updateBooking.isVerified)
     }
     else if(booking.bookingId!=bookingId){
       return res.status(500).json("Code not valid")
