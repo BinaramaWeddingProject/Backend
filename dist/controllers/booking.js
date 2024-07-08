@@ -1,16 +1,12 @@
 import { Booking } from '../models/booking/booking.js';
 export const createBooking = async (req, res) => {
     try {
-        const { vId, uId, name, contact, location, guests, date, address, message } = req.body;
-        // Check if there is already a booking with the same uId and vId
+        const { vId, uId, name, contact, location, guests, date, address, message, typeOfEvent } = req.body;
         const existingBooking = await Booking.findOne({ uId, vId });
         if (existingBooking) {
-            // Return a response indicating that a booking already exists for this uId and vId
             return res.status(400).json({ error: 'Booking already exists for this uId and vId' });
         }
-        // Generate a unique ID for the booking
         const uniqueId = Math.floor(100000 + Math.random() * 900000);
-        // Construct the new booking object
         const newBooking = new Booking({
             vId,
             uId,
@@ -21,9 +17,9 @@ export const createBooking = async (req, res) => {
             date,
             address,
             message,
+            typeOfEvent, // New field added
             bookingId: uniqueId
         });
-        // Save the new booking
         const savedBooking = await newBooking.save();
         return res.status(201).json(savedBooking);
     }
@@ -44,10 +40,10 @@ export const getAllBookings = async (req, res) => {
 export const getBookingById = async (req, res) => {
     try {
         const vId = req.params.vId;
-        const { bookingId, uId } = req.body;
+        // const {bookingId,uId} = req.body
         // Correctly extract vId from request parameters
         // Find the booking by vId
-        const booking = await Booking.findOne({ vId, uId });
+        const booking = await Booking.find({ vId });
         if (!booking) {
             return res.status(404).json({ message: 'Booking not found' });
         }

@@ -304,4 +304,4 @@ export const topVenues = asyncHandler(async (req: Request, res: Response) => {
 
   // Return a JSON response with a custom API response format
   return res.status(200).json(new ApiResponse(200,  venues , "Here are the Vendors by rank"));
-});
+}); 
