@@ -15,7 +15,7 @@ export interface IVendor extends Document {
   state: string;
   businessName: string;
   type_Of_Business: string;
-  packages: {
+  packages?: {
     name: string;
     days: string;
     price: string;
@@ -38,6 +38,7 @@ export interface IVendor extends Document {
   refreshToken?: string;
   createdAt: Date;
   updatedAt: Date;
+  price?: string;
 }
 
 const VendorSchema = new Schema<IVendor>(
@@ -120,6 +121,11 @@ const VendorSchema = new Schema<IVendor>(
     summary: {
       type: String,
     },
+
+    price: {
+      type: String,
+    },
+
     bookingPolicy: {
       type: String,
     },

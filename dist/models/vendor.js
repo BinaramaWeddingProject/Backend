@@ -80,6 +80,9 @@ const VendorSchema = new Schema({
     summary: {
         type: String,
     },
+    price: {
+        type: String,
+    },
     bookingPolicy: {
         type: String,
     },
