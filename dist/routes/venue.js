@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { DeleteVenueById, GetVenueById, Login, Register, UpdateVenue, searchvenuesByCity, topVenues, filterVenues } from "../controllers/venue.js";
+import { DeleteVenueById, GetVenueById, Login, Register, filterVenues, UpdateVenue, searchvenuesByCity, topVenues } from "../controllers/venue.js";
 import { upload } from "../middlewares/multer.js";
 import { checkAdmin } from "../middlewares/Admin.js";
 const router = Router();
@@ -8,9 +8,6 @@ router.route("/register").post(Register);
 router.route("/login").post(Login);
 //get
 router.route("/all").get(filterVenues);
-// router.route("/all").get(ShowAllVenues);
-// //get
-// router.route("/all").get(ShowAllVenues);
 // GET - Retrieve a vendor by ID
 router.get("/:id", GetVenueById);
 //PUT - Update venue data

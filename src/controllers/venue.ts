@@ -15,13 +15,13 @@ export const Register = asyncHandler(async (
   res: Response,
   next: NextFunction) => {
 
-  const { businessName, yourName, email, password, phone, city, comments } = req.body;
-  console.log(businessName, yourName, email, password, phone, city, comments)
+        const {businessName ,yourName,  email , password , phone , city , comments  , venueType , facilities , foodPackages } = req.body;
+        console.log(businessName ,yourName,  email , password , phone , city , comments)
 
-  const venue = await Venue.create({
-    businessName, yourName, email, password, phone, city, comments
-
-  });
+        const venue = await Venue.create({
+            businessName ,yourName,  email , password , phone , city , comments ,venueType , facilities , foodPackages
+            
+        });
 
 
   if (!venue) {
@@ -39,27 +39,27 @@ export const Register = asyncHandler(async (
 
 // Login vendor
 export const Login = asyncHandler(async (req: Request, res: Response) => {
-  const { email, password } = req.body;
-
-  if (!email || !password) {
-    throw new ApiError(400, "Email or Password is missing!!");
-  }
-
-  // Finding vendor from database using email
-  const venue = await Venue.findOne({ email });
-
-  if (!venue) {
-    throw new ApiError(404, "Email/User doesn't exist!!");
-  }
-
-  // Check password
+    const { email, password } = req.body;
+  
+    if (!email || !password) {
+      throw new ApiError(400, "Email or Password is missing!!");
+    }
+  
+    // Finding vendor from database using email
+    const venue = await  Venue.findOne({ email });
+  
+    if (!venue) {
+      throw new ApiError(404, "Email/User doesn't exist!!");
+    }
+  
+    // Check password
   const isPasswordValid = await venue.isPasswordCorrect(password);
 
-  // const isPasswordValid = venue.password === password
-
-  if (!isPasswordValid) {
-    throw new ApiError(401, "Invalid venue credentials");
-  }
+//  const  isPasswordValid = venue.password === password
+  
+    if (!isPasswordValid) {
+      throw new ApiError(401, "Invalid venue credentials");
+    }
 
 
   // Generate access token
@@ -137,8 +137,7 @@ export const UpdateVenue = asyncHandler(async (req: Request, res: Response) => {
 
     }
   }
-
- // console.log(venue)
+ console.log(venue)
   await venue.save();
   return res.status(200).json(new ApiResponse(200, "Venue Updated Successfully!!"));
 });
@@ -166,46 +165,16 @@ export const DeleteVenueById = asyncHandler(async (req: Request, res: Response) 
 
 
 // Function to get all venues with optional filters
-export const ShowAllVenues = asyncHandler(async (req: Request, res: Response) => {
-  const { city, guestCapacity } = req.query;
-  console.log(city, guestCapacity)
-  // Build the filter object
-  const filter: any = {};
-  if (city) {
-    filter.city = city;
-  }
-  if (guestCapacity) {
-    filter.guestCapacity = guestCapacity;
-  }
-
-  const venues = await Venue.find(filter);
-
-  if (!venues || venues.length === 0) {
-    throw new ApiError(404, "No vendors in DB");
-  }
-
-  return res.status(200).json(
-    new ApiResponse(200, { venues }, "Here are all vendors.")
-  );
-});
-
-
-
-// Function to get all venues with optional filters
 export const filterVenues = async (req: Request, res: Response) => {
   try {
     // Extract filter criteria from query parameters
-    const { businessName, city, minGuests, maxGuests, foodPackage, facilities, venueTypes } = req.query;
-    console.log(businessName, city, minGuests, maxGuests, foodPackage, facilities, venueTypes)
+    const { city, minGuests, maxGuests, foodPackage, facilities, venueTypes } = req.query;
+    console.log(city, minGuests, maxGuests, foodPackage, facilities, venueTypes)
     // Build the filter criteria object
     const filterCriteria: any = {};
-    var venues;
 
     if (city) {
       filterCriteria.city = city;
-    }
-    if (businessName) {
-      filterCriteria.businessName = businessName;
     }
 
     if (minGuests || maxGuests) {
@@ -226,23 +195,15 @@ export const filterVenues = async (req: Request, res: Response) => {
       filterCriteria.venueType = { $in: (venueTypes as string).split(',') };
     }
 
-    // console.log(filterCriteria)
-
-    if (filterCriteria) {
-      venues = await Venue.find(filterCriteria);
-    }
-    else {
-      venues = await Venue.find();
-    }
-
-
+    // Perform the query
+    const venues = await Venue.find(filterCriteria);
 
     // Return the filtered venues
     res.status(200).json({
       success: true,
       data: venues
     });
-  } catch (error: any) {
+  } catch (error:any) {
     console.error('Error fetching venues:', error);
     res.status(500).json({
       success: false,
@@ -251,9 +212,6 @@ export const filterVenues = async (req: Request, res: Response) => {
     });
   }
 };
-
-
-
 
 
 // search by the city

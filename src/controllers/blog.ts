@@ -114,4 +114,3 @@ export const UpdateBlog = asyncHandler(async (req: Request, res: Response) => {
         new ApiResponse(200 , {blog}, "here are the blogs.")
     )
 })
-

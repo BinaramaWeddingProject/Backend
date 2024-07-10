@@ -10,7 +10,7 @@ cloudinary.config({
 export const uploadOnCloudinary = async (files) => {
     try {
         const imageUrls = [];
-        // Check if files is iterable (an array or an iterable object)
+        // Check if files is iterable (an array or an iterable object) 
         if (!Array.isArray(files) && typeof files[Symbol.iterator] !== 'function') {
             throw new TypeError('Files parameter is not iterable');
         }

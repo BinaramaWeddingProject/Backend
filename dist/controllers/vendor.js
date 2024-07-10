@@ -51,7 +51,7 @@ export const Login = asyncHandler(async (req, res) => {
     if (!vendor) {
         throw new ApiError(404, "Email/Vendor doesn't exist!!");
     }
-    // Check password
+    // // Check password
     const isPasswordValid = await vendor.isPasswordCorrect(password);
     //  const  isPasswordValid = vendor.password === password
     if (!isPasswordValid) {

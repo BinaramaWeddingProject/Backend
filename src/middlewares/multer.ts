@@ -1,4 +1,4 @@
-import multer, { FileFilterCallback  , Multer} from "multer";
+import multer from "multer";
 
 
 import { Request } from "express"; // Import the Request type from express
