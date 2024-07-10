@@ -59,7 +59,6 @@ const VendorSchema = new Schema({
     },
     portfolio: {
         type: [String],
-        required: false,
     },
     experience: {
         type: String,
@@ -69,6 +68,11 @@ const VendorSchema = new Schema({
     },
     willingToTravel: {
         type: Boolean,
+    },
+    isVerified: {
+        type: String,
+        enum: ['Approved', 'Rejected', 'Pending'],
+        default: 'Pending',
     },
     usp: {
         type: String,
@@ -91,11 +95,6 @@ const VendorSchema = new Schema({
     },
     refreshToken: {
         type: String,
-    },
-    isVerified: {
-        type: String,
-        enum: ['Approved', 'Rejected', 'Pending'],
-        default: 'Pending',
     },
 }, {
     timestamps: true,

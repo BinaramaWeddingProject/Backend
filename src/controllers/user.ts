@@ -7,6 +7,7 @@ import { IUser, User } from "../models/user.js";
 import jwt from 'jsonwebtoken';
 import { Vendor } from "../models/vendor.js";
 import { uploadOnCloudinary } from "../utils/cloudniary.js";
+import { Venue } from "../models/venue.js";
 
 
 
@@ -55,9 +56,9 @@ export const Login = asyncHandler(async (req: Request, res: Response) => {
     }
   
    // // Check password
-  // const isPasswordValid = await vendor.isPasswordCorrect(password);
+  const isPasswordValid = await user.isPasswordCorrect(password);
 
-  const  isPasswordValid = user.password === password
+  // const  isPasswordValid = user.password === password
   
     if (!isPasswordValid) {
       throw new ApiError(401, "Invalid user credentials");
@@ -96,7 +97,7 @@ export const GetUserById = asyncHandler(async(req: Request, res: Response) => {
 //Delete User bY ID
 export const DeleteUserById = asyncHandler(async(req: Request, res: Response) => {
     const { id } = req.params; 
-
+console.log("user id",id)
     const user = await User.findById(id);
      
     if(!user){
@@ -104,7 +105,7 @@ export const DeleteUserById = asyncHandler(async(req: Request, res: Response) =>
     }
 
    
-    const respose = await Vendor.findByIdAndDelete(id);
+    const respose = await User.findByIdAndDelete(id);
 
     return res.status(200).json(new ApiResponse(200 , {respose} , "User Deleted Successfully "));
 });
@@ -153,4 +154,21 @@ export const UpdateUser = asyncHandler(async (req: Request, res: Response) => {
 
   await user.save();
   return res.status(200).json(new ApiResponse(200, "User Updated Successfully!!"));
+});
+
+//all cities
+// all cities
+export const GetAllCities = asyncHandler(async(req: Request, res: Response) => {
+  const p = await Vendor.find();
+  const c = await Venue.find();
+
+  const cities = [...new Set([
+    ...p.map(v => v.city.toLowerCase()), 
+    ...c.map(v => v.city.toLowerCase())
+  ])];
+
+  // Capitalize the first letter of each city for better readability
+  const capitalizedCities = cities.map(city => city.charAt(0).toUpperCase() + city.slice(1));
+
+  return res.status(200).json({ cities: capitalizedCities });
 });

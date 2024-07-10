@@ -123,7 +123,7 @@ export const UpdateVendor = asyncHandler(async (req: Request, res: Response) => 
 
   const updateFields: Partial<IVendor> = req.body;
   const givenFiles = req.files as Express.Multer.File[];
- console.log("multer" , givenFiles)
+ 
   const vendor = await Vendor.findById(id);
 
   if (!vendor) {
@@ -246,3 +246,11 @@ export const GetVendorByType = asyncHandler(async (req: Request, res: Response) 
   // Return the found vendors
   return res.status(200).json(new ApiResponse(200, { vendors }, "Here are the Vendors by type"));
 });
+
+//top rankers
+// export const topVendors = asyncHandler(async (req: Request, res: Response) => {
+
+//   const vendors = await Vendor.find();
+//   return res.status(200).json(new ApiResponse(200, { vendors }, "Here are the Vendors by rank"));
+
+// });

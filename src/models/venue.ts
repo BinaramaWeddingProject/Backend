@@ -27,6 +27,8 @@ export interface IVenue extends Document {
   foodPackages?: string;
   venueType?: string[];
   facilities?: string[];
+  isVerified?: 'Approved' | 'Rejected' | 'Pending';
+  rank?: number;
   isPasswordCorrect(password: string | Buffer): Promise<boolean>;
 }
 
@@ -107,6 +109,20 @@ const VenueSchema = new Schema<IVenue>(
     foodPackages: {
       type: String,
     },
+
+    rank: {
+      type: Number,
+      default: 0,
+      min: 0,
+      max: 10,
+    },
+
+    isVerified: {
+      type: String, 
+      enum: ['Approved' , 'Rejected' , 'Pending'],
+      default: 'Pending',
+    },
+
     venueType: {
       type: [String],
       // enum: [

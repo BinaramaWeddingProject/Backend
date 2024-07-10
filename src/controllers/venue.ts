@@ -1,20 +1,19 @@
 import { NextFunction, Request, Response } from "express";
 
 import { asyncHandler } from "../utils/asynHandler.js";
-import { NewVenueRequestBody , ControllerType } from "../types/types.js";
+import { NewVenueRequestBody, ControllerType } from "../types/types.js";
 import { ApiError } from "../utils/apiError.js";
 import { ApiResponse } from "../utils/apiResponse.js";
 import { uploadOnCloudinary } from "../utils/cloudniary.js";
-import { Venue , IVenue} from "../models/venue.js";
-import { VenueBooking } from "../models/booking/venuebooking.js";
+import { Venue, IVenue } from "../models/venue.js";
 import jwt from 'jsonwebtoken';
 
 
 //Register Venu
-export const Register = asyncHandler(async(
-    req: Request<{}, {}, NewVenueRequestBody>,
-    res:Response,
-    next: NextFunction) =>{
+export const Register = asyncHandler(async (
+  req: Request<{}, {}, NewVenueRequestBody>,
+  res: Response,
+  next: NextFunction) => {
 
         const {businessName ,yourName,  email , password , phone , city , comments  , venueType , facilities , foodPackages } = req.body;
         console.log(businessName ,yourName,  email , password , phone , city , comments)
@@ -24,15 +23,15 @@ export const Register = asyncHandler(async(
             
         });
 
-  
-        if(!venue){
-        throw new ApiError(500, "something went wrong while registering the vendor!!")   
-        }
-        
 
-        return res.status(201).json(
-            new ApiResponse(200 ,  { venue } , "vendor regiested successfully" )
-        )
+  if (!venue) {
+    throw new ApiError(500, "something went wrong while registering the vendor!!")
+  }
+
+
+  return res.status(201).json(
+    new ApiResponse(200, { venue }, "vendor regiested successfully")
+  )
 
 })
 
@@ -63,56 +62,70 @@ export const Login = asyncHandler(async (req: Request, res: Response) => {
     }
 
 
-     // Generate access token
-     const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET || 'default_secret_key';
-     const accessToken = jwt.sign({ id: venue._id }, accessTokenSecret, { expiresIn: '1h' });
+  // Generate access token
+  const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET || 'default_secret_key';
+  const accessToken = jwt.sign({ id: venue._id }, accessTokenSecret, { expiresIn: '1h' });
 
 
 
-  
-    // Fetch logged-in vendor details excluding password
-    const loggedInVenue = await Venue.findById(venue._id).select("-password");
-  
-    // Return response with logged-in vendor details and access token
-    return res.status(200)
-    .cookie("accesToken" , accessToken, )//put tokens in cookies
+
+  // Fetch logged-in vendor details excluding password
+  const loggedInVenue = await Venue.findById(venue._id).select("-password");
+
+  // Return response with logged-in vendor details and access token
+  return res.status(200)
+    .cookie("accesToken", accessToken,)//put tokens in cookies
     .json(
-      new ApiResponse(200, { loggedInVenue , accessToken}, "Here is the vendor")
+      new ApiResponse(200, { loggedInVenue, accessToken }, "Here is the vendor")
     );
-  });
+});
 
 
 
 
-  //Get Vendor By ID
-export const GetVenueById = asyncHandler(async(req: Request, res: Response) => {
-    const { id } = req.params; 
-   
-    const venue = await Venue.findById(id);
-     
-    if(!venue){
-        throw new ApiError(404 , "No Vendor Found!!!");
-    }
+//Get Venue By ID
+export const GetVenueById = asyncHandler(async (req: Request, res: Response) => {
+  const { id } = req.params;
 
-    return res.status(200).json(new ApiResponse(200 , {venue} , "Here is the Vendor"));
+  const venue = await Venue.findById(id);
+
+  if (!venue) {
+    throw new ApiError(404, "No Vendor Found!!!");
+  }
+
+  return res.status(200).json(new ApiResponse(200, { venue }, "Here is the Vendor"));
 });
 
 //update Venue
 export const UpdateVenue = asyncHandler(async (req: Request, res: Response) => {
   const { id } = req.params;
 
+  // const venueData = JSON.parse(req.body.venueData);
+    
+    // if (req.files && Array.isArray(req.files)) {
+      
+    //   venueData.images = (req.files as Express.Multer.File[]).map(file => `/uploads/${file.filename}`);
+    //   console.log("venueimage" ,venueData.images );
+    // }
+    // console.log("venuedata" , venueData);
+   
+
   const updateFields: Partial<IVenue> = req.body;
-  
+  console.log("data" , updateFields)
+ 
+
   const givenFiles = req.files as Express.Multer.File[];
   
   const venue = await Venue.findById(id);
-  
+
   if (!venue) {
     throw new ApiError(404, "No Venue Found!!!");
   }
+ // console.log("fff" , givenFiles)
+
 
   if (givenFiles?.length > 0) {
-    console.log(givenFiles);
+   // console.log("inside", givenFiles);
     const imageUrls = await uploadOnCloudinary(givenFiles);
     if (imageUrls) venue.images = imageUrls;
   }
@@ -121,7 +134,7 @@ export const UpdateVenue = asyncHandler(async (req: Request, res: Response) => {
   for (const [key, value] of Object.entries(updateFields)) {
     if (key !== '_id' && key !== '__v') {
       (venue as any)[key] = value;
-    
+
     }
   }
  console.log(venue)
@@ -130,21 +143,23 @@ export const UpdateVenue = asyncHandler(async (req: Request, res: Response) => {
 });
 
 
-  
+
 //Delete venue bY ID
-export const DeleteVenueById = asyncHandler(async(req: Request, res: Response) => {
-    const { id } = req.params; 
+export const DeleteVenueById = asyncHandler(async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const {user} = req.body
+  console.log("useers " , user)
 
-    const venue = await Venue.findById(id);
-     
-    if(!venue){
-        throw new ApiError(404 , "No Vendor Found!!!");
-    }
+  const venue = await Venue.findById(id);
 
-   
-    const respose = await Venue.findByIdAndDelete(id);
+  if (!venue) {
+    throw new ApiError(404, "No Vendor Found!!!");
+  }
 
-    return res.status(200).json(new ApiResponse(200 , {respose} , "Vendor Deleted Successfully "));
+
+  const respose = await Venue.findByIdAndDelete(id);
+
+  return res.status(200).json(new ApiResponse(200, { respose }, "Vendor Deleted Successfully "));
 });
 
 
@@ -188,7 +203,7 @@ export const filterVenues = async (req: Request, res: Response) => {
       success: true,
       data: venues
     });
-  } catch (error) {
+  } catch (error:any) {
     console.error('Error fetching venues:', error);
     res.status(500).json({
       success: false,
@@ -201,30 +216,50 @@ export const filterVenues = async (req: Request, res: Response) => {
 
 // search by the city
 export const searchvenuesByCity = async (req: Request, res: Response) => {
-    const { city } = req.params; // Get the city query parameter from the request
-  
-    try {
-      let venues;
-  
-      // Check if the city parameter exists
-      if (city && typeof city === "string") {
-        // Query the Vendor collection for vendors with the specified city
-        venues = await Venue.find({ city: city });
-      } else {
-        // If city parameter is not provided or is not a string, return an error
-        return res.status(400).json({ message: "City parameter is required and must be a string" });
-      }
-  
-      // If no vendors are found, return an empty array
-      if (!venues || venues.length === 0) {
-        return res.status(404).json({ message: "No venues found for the specified city" });
-      }
-  
-      // If vendors are found, return them in the response
-      return res.status(200).json({ venues });
-    } catch (error) {
-      // If an error occurs during the database query, return a 500 error
-      return res.status(500).json({ message: "Internal server error" });
+  const { city } = req.params; // Get the city query parameter from the request
+
+  try {
+    let venues;
+
+    // Check if the city parameter exists
+    if (city && typeof city === "string") {
+      // Query the Vendor collection for vendors with the specified city
+      venues = await Venue.find({ city: city });
+    } else {
+      // If city parameter is not provided or is not a string, return an error
+      return res.status(400).json({ message: "City parameter is required and must be a string" });
     }
-  };
-//
+
+    // If no vendors are found, return an empty array
+    if (!venues || venues.length === 0) {
+      return res.status(404).json({ message: "No venues found for the specified city" });
+    }
+
+    // If vendors are found, return them in the response
+    return res.status(200).json({ venues });
+  } catch (error) {
+    // If an error occurs during the database query, return a 500 error
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+
+
+// //Get Ranked venues
+// export const topVenues = asyncHandler(async (req: Request, res: Response) => {
+//   // Inside this function, we assume Venue is a Mongoose model
+//   const venues = await Venue.find({rank:{1:5}});
+
+//   // Return a JSON response with a custom API response format
+//   return res.status(200).json(new ApiResponse(200, { venues }, "Here are the Vendors by rank"));
+// });
+
+
+// Assuming Venue is a Mongoose model and asyncHandler is used for error handling
+export const topVenues = asyncHandler(async (req: Request, res: Response) => {
+  // Query to find venues where rank is between 1 and 5
+  const venues = await Venue.find({ rank: { $gte: 1, $lte: 2 } });
+
+  // Return a JSON response with a custom API response format
+  return res.status(200).json(new ApiResponse(200,  venues , "Here are the Vendors by rank"));
+}); 

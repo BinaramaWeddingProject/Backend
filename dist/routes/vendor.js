@@ -17,4 +17,6 @@ router.get(":city", searchVendorsByCity);
 router.route("/:id").delete(DeleteVendorById);
 //Get -  vendors by type
 router.get("/category/:type_Of_Business", GetVendorByType);
+//Get-ranked vendors
+// router.get("/rankedvendors")
 export default router;

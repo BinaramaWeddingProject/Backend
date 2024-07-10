@@ -7,7 +7,6 @@ import { asyncHandler } from "../utils/asynHandler.js";
 import { Vendor } from '../models/vendor.js';
 import { Venue } from '../models/venue.js';
 import { User } from '../models/user.js';
-import { VenueBooking } from '../models/booking/venuebooking.js';
 import { ApiError } from "../utils/apiError.js";
 import { ApiResponse } from "../utils/apiResponse.js";
 import { uploadOnCloudinary } from "../utils/cloudniary.js";
@@ -50,7 +49,7 @@ export const loginAdmin = asyncHandler(async (req: Request, res: Response) => {
 
   console.log(isPasswordValid)
   if (!isPasswordValid) {
-    throw new ApiError(401, "Invalid user credentials");
+    throw new ApiError(401, "Invalid admin credentials");
   }
   // Generate access token
   const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET || 'default_secret_key';
@@ -62,9 +61,14 @@ export const loginAdmin = asyncHandler(async (req: Request, res: Response) => {
 
   // Return response with logged-in vendor details and access token
   return res.status(200)
-    .cookie("accesToken", accessToken,)//put tokens in cookies
+  .cookie("accessToken", accessToken, {
+    httpOnly: true, // Prevents client-side JavaScript from accessing the cookie
+    secure: process.env.NODE_ENV === 'production', // Ensures the cookie is sent only over HTTPS in production
+    sameSite: 'strict', // Ensures the cookie is sent only to the same site
+    maxAge: 3600000 // 1 hour in milliseconds
+  })
     .json(
-      new ApiResponse(200, { loggedInAdmin, accessToken }, "Here is the vendor")
+      new ApiResponse(200, { loggedInAdmin, accessToken }, "Here is the admin")
     );
 });
 
@@ -259,14 +263,14 @@ export const getAdminById = async (req: Request, res: Response) => {
   };
 
   // Function to get all Bookings
-  export const getAllBookings = async (req: Request, res: Response) => {
-    try {
-      const vendors = await VenueBooking.find();
-      res.status(200).json(vendors);
-    } catch (error: any) {
-      res.status(500).json({ message: error.message });
-    }
-  };
+  // export const getAllBookings = async (req: Request, res: Response) => {
+  //   try {
+  //     const vendors = await VenueBooking.find();
+  //     res.status(200).json(vendors);
+  //   } catch (error: any) {
+  //     res.status(500).json({ message: error.message });
+  //   }
+  // };
 
   // Function to delete vendor by ID
   export const deleteBookingById = async (req: Request, res: Response) => {

@@ -79,6 +79,17 @@ const VenueSchema = new Schema({
     foodPackages: {
         type: String,
     },
+    rank: {
+        type: Number,
+        default: 0,
+        min: 0,
+        max: 10,
+    },
+    isVerified: {
+        type: String,
+        enum: ['Approved', 'Rejected', 'Pending'],
+        default: 'Pending',
+    },
     venueType: {
         type: [String],
         // enum: [
