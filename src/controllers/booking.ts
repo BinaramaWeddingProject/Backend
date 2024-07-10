@@ -37,8 +37,8 @@ import { VenueBooking } from '../models/booking/venuebooking.js';
 // Function to create a new venue booking
 export const createVenueBooking = async (req: Request, res: Response) => {
   try {
-    const { venueId, userId, bookingDate, startTime, endTime } = req.body;
-    const newBooking = new VenueBooking({ venueId, userId, bookingDate, startTime, endTime });
+    const { venueId, userId, bookingDate} = req.body;
+    const newBooking = new VenueBooking({ venueId, userId, bookingDate });
     const savedBooking = await newBooking.save();
     res.status(201).json(savedBooking);
   } catch (error:any) {
