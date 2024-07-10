@@ -9,7 +9,10 @@ export interface IEnquiry {
     address: string;
     message?: string;
     typeOfEvent: string;
+    isRead:boolean;
   }
+
+
 
 const enquirySchema = new mongoose.Schema({
     name: {
@@ -44,6 +47,12 @@ const enquirySchema = new mongoose.Schema({
       type: String,
       
     },
+   isRead: {
+      type: Boolean,
+      default:false
+      
+    },
+
 
 
   });
